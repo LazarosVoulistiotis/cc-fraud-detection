@@ -18,7 +18,7 @@ The goal is to simulate a production-like workflow that is **practical for compa
 ---
 
 ## 🛠️ Technologies & Libraries
-- **Python 3.11+**
+- **Python 3.13.0**
 - **Jupyter Notebooks** → interactive experimentation
 - **NumPy** → numerical computing with arrays and vectors
 - **Pandas** → dataset handling (CSV, Excel, transformations)
