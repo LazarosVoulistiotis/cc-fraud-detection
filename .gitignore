@@ -1,0 +1,38 @@
+# Git ignore rules 
+
+# --- Python env & caches ---
+.venv/
+__pycache__/
+*.pyc
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Editors/IDE ---
+.vscode/
+.idea/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Data (raw & μεγάλα) ---
+data/data_raw/          # ΜΗΝ ανέβει το raw dataset
+data/**/*.zip
+data/**/*.7z
+data/**/*.gz
+data/**/*.tar
+data/**/*.parquet
+# Προαιρετικά (πιο αυστηρό): αγνόησε κάθε CSV ΜΟΝΟ μέσα στο data/
+# data/**/*.csv
+
+# --- Secrets/keys ---
+.env
+*.env
+.kaggle/
+
+# --- Logs & παράγωγα που αναπαράγονται ---
+logs/
+*.log
+models/
+artifacts/
