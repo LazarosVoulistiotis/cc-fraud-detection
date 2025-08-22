@@ -141,3 +141,88 @@
 - Broadcasting rules: Τα σχήματα “ευθυγραμμίζονται” από τα δεξιά. Αν μία διάσταση είναι 1 ή ίδια, γίνεται broadcast. Αλλιώς σφάλμα.
 - Axis παρεξήγηση: axis=0 είναι κάθετες πράξεις ανά στήλη, axis=1 οριζόντιες ανά γραμμή.
 - np.cov default: Από προεπιλογή θεωρεί κάθε γραμμή ως variable (rowvar=True). Για κλασικό (samples, features) χρειάζεται rowvar=False.
+
+---
+
+# Ημέρα 2 — Pandas Essentials (Series, DataFrame, I/O, Cleaning) (2–3 ώρες)
+
+Goal της ημέρας: Να μάθεις τα βασικά του Pandas για φόρτωση/επιθεώρηση δεδομένων, επιλογές, φιλτράρισμα, δημιουργία νέων στηλών, missing values, groupby/agg, ταξινομήσεις και joins.
+
+1) import pandas as pd
+   import numpy as np
+
+- Η pandas είναι το βασικό εργαλείο για πίνακες δεδομένων (DataFrames), ανάλογο με Excel αλλά πολύ πιο ισχυρό.
+- NumPy = υπολογισμοί με πίνακες/διανύσματα/μήτρες και είναι η βάση πάνω στην οποία χτίζεται η pandas (κάθε στήλη DataFrame στην ουσία είναι NumPy array).
+
+2) Επιλογές / Φιλτράρισμα / Νέες Στήλες 
+
+-ΕΠΙΛΟΓΕΣ
+- df["col"] → μία στήλη (Series).
+- df[["col1","col2"]] → πολλές στήλες (DataFrame).
+- df.loc[rows, cols] → επιλογή με labels (ονόματα).
+- df.iloc[rows, cols] → επιλογή με index θέσεις (αριθμητικά).
+
+-ΦΙΛΤΡΑΡΙΣΜΑ
+- Χρησιμοποιούμε boolean indexing: df[ df["col"] > 100 ].
+- Για πολλές συνθήκες: & → AND, | → OR, ~ → NOT (πάντα με παρενθέσεις).
+- Ειδικές μέθοδοι: .isin([...]), .between(a,b), .str.contains("text") για πιο σύνθετα φιλτραρίσματα.
+
+-MISSING VALUES
+- df.isna().sum() → μετράει τα κενά ανά στήλη.
+- .fillna(value) → αντικαθιστά NaN με μια τιμή (π.χ. "Unknown" ή 0).
+- .dropna(subset=...) → πετάει γραμμές που έχουν NaN σε συγκεκριμένες στήλες.`
+
+- Συνήθη Gotchas
+- KeyError: αν η στήλη δεν υπάρχει (π.χ. λάθος όνομα).
+- TypeError: αν amount δεν είναι αριθμητικό· μετέτρεψέ το:
+df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
+- NaN στις ομαδοποιήσεις: συνήθως αγνοούνται στα aggregations, αλλά έλεγξε αν πρέπει να τα γεμίσεις/φιλτράρεις πριν.
+
+4) Joins / Merge
+- Με το pd.merge μπορείς να κάνεις joins μεταξύ πινάκων όπως στη SQL.
+Σημειώσεις για joins
+- inner: μόνο οι κοινοί merchants.
+- left: κράτα όλα από df, πρόσθεσε merchants αν υπάρχουν.
+- right: αντίστροφο.
+- outer: όλα, γεμίζει NaN όπου δεν υπάρχει ταίριασμα.
+
+Συγκεντρώνοντας τις σημειώσεις μου
+
+## 🔹 Indexing & Selection
+```python
+df["col"]          # μία στήλη (Series)
+df[["c1","c2"]]    # πολλές στήλες (DataFrame)
+
+df.loc[0:5, ["c1","c2"]]   # επιλογή με labels (inclusive)
+df.iloc[0:5, 0:2]          # επιλογή με index θέσεις (exclusive στο τέλος)
+👉 loc = με ονόματα, iloc = με αριθμητικές θέσεις.
+
+🔹 GroupBy & Aggregations
+df.groupby("merchant")["amount"].agg(["count","mean","sum"])
+df.groupby("hour")["amount"].median().nlargest(5)
+👉 Χρήσιμο για σύνοψη/στατιστικά ανά κατηγορία.
+
+🔹 Joins (SQL-style)
+- inner → κρατάει μόνο όσα ταιριάζουν και στα 2 DataFrames.
+- left → κρατάει όλες τις γραμμές του αριστερού, NaN αν δεν υπάρχει match στο δεξί.
+- right → ανάποδα από το left.
+- outer → ένωση όλων, γεμίζει NaN όπου λείπουν τιμές.
+
+🔹 Missing Values
+df.isna().sum()                         # πόσα NaN ανά στήλη
+df["col"] = df["col"].fillna("Unknown") # γέμισμα
+df.dropna(subset=["merchant"], inplace=True)  # drop γραμμών
+👉 Σκέψου: ποια NaN έχουν νόημα να συμπληρωθούν (impute) και ποια να διαγραφούν.
+
+🔹 Συνήθη Σφάλματα
+- KeyError: 'col' → η στήλη δεν υπάρχει (λάθος όνομα).
+- SettingWithCopyWarning → απόπειρα αλλαγής σε αντίγραφο:
+✔ Λύση → χρησιμοποίησε ανάθεση (df["col"] = ...) αντί για inplace=True σε στήλη.
+- ValueError σε conversions → στήλη δεν είναι καθαρά αριθμητική/ημερομηνιακή.
+
+🔹 ML Pipeline Connection
+- Indexing / filtering → feature selection (π.χ. κράτα μόνο relevant features).
+- GroupBy / aggregations → feature engineering (π.χ. μέσο ποσό ανά πελάτη).
+- Joins → συνένωση διαφορετικών πηγών δεδομένων (transactions + merchants).
+- Missing values → imputation βήμα στο preprocessing pipeline.
+- Warnings & errors → σημαντικό να τα καταλάβεις γιατί μπορεί να “σπάσουν” pipelines σε παραγωγή.
