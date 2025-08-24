@@ -226,3 +226,53 @@ df.dropna(subset=["merchant"], inplace=True)  # drop γραμμών
 - Joins → συνένωση διαφορετικών πηγών δεδομένων (transactions + merchants).
 - Missing values → imputation βήμα στο preprocessing pipeline.
 - Warnings & errors → σημαντικό να τα καταλάβεις γιατί μπορεί να “σπάσουν” pipelines σε παραγωγή.
+
+# Ημέρα 3 — Plotting (Matplotlib + Seaborn) & Mini‑EDA
+
+- Matplotlib (pyplot) = χαμηλού επιπέδου API για γραφήματα
+- Seaborn = υψηλού επιπέδου API πάνω από Matplotlib με ωραίες default αισθητικές και «στατιστικά» γραφήματα (διανομές, box/violin, pairplot κ.λπ.).
+
+“Συνταγές” κώδικα (γρήγορα snippets)
+# Matplotlib savefig
+plt.savefig("images/week2/plot.png", dpi=150, bbox_inches="tight")
+
+# Seaborn histplot
+sns.histplot(df["amount"], bins=50, kde=True)
+
+# Boxplot
+sns.boxplot(data=df, x="is_fraud", y="amount")
+
+# Countplot
+sns.countplot(data=df, x="is_fraud")
+
+# Heatmap corr
+sns.heatmap(df.corr(numeric_only=True), annot=False, cmap="viridis")
+
+### 3–5 συμπεράσματα (παραδείγματα)
+- Υπάρχει ανισορροπία κλάσεων: το is_fraud=1 είναι πολύ μικρό ποσοστό.
+- Η κατανομή του amount είναι right‑skewed / long‑tail → χρήσιμο το log‑scale.
+- Ο μέσος όρος ποσού διαφέρει ανά ώρα (πιθανά peaks σε συγκεκριμένες ώρες).
+- Ασθενείς/μέτριες συσχετίσεις μεταξύ amount και άλλων numeric features (εξαρτάται από τα δεδομένα).
+
+### Συνήθη Gotchas
+- Figure overlap / κομμένες ετικέτες: Χρησιμοποίησε plt.tight_layout() πριν από savefig.
+- Ανοιχτές φιγούρες: Μετά από savefig, κάνε plt.close() σε loops για να μην γεμίσει η μνήμη.
+- Log scale: Απόφυγε log σε μη‑θετικές τιμές (0/αρνητικά) — καθάρισε/φίλτραρε πριν.
+- numeric_only=True: Απαραίτητο σε df.corr όταν έχεις μη‑numeric στήλες.
+- Ασυμφωνίες στον άξονα x: Για barplots/lineplots φρόντισε ταξινόμηση (sort_index, sort_values) για καλύτερη ανάγνωση.
+
+### Self‑Check Quiz 
+
+1. Πότε προτιμάς hist vs boxplot για μια μεταβλητή;
+2. Τι κάνει plt.tight_layout() και γιατί είναι χρήσιμο πριν από savefig;
+3. Πότε έχει νόημα plt.xscale("log");
+4. Ποια είναι η βασική διαφορά plt.plot vs sns.lineplot;
+5.Τι προσοχή θέλει όταν κάνεις heatmap συσχετίσεων σε DataFrame με strings/categoricals;
+
+Γρήγορες απαντήσεις:
+
+1. hist για μορφή κατανομής (skewness, modes), boxplot για outliers/median/IQR.
+2. Ρυθμίζει spacing ώστε να μην κόβονται τίτλοι/labels → καθαρά exports.
+3. Όταν η μεταβλητή έχει long‑tail/πολύ μεγάλες διακυμάνσεις.
+4. Το plt.plot είναι low‑level Matplotlib, το sns.lineplot προσφέρει αισθητική & CI out‑of‑the‑box.
+5. Χρησιμοποίησε numeric_only=True ή επίλεξε μόνο numeric στήλες.
