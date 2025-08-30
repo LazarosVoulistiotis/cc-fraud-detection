@@ -189,7 +189,7 @@ df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
 Συγκεντρώνοντας τις σημειώσεις μου
 
 ## 🔹 Indexing & Selection
-```python
+python
 df["col"]          # μία στήλη (Series)
 df[["c1","c2"]]    # πολλές στήλες (DataFrame)
 
@@ -233,19 +233,19 @@ df.dropna(subset=["merchant"], inplace=True)  # drop γραμμών
 - Seaborn = υψηλού επιπέδου API πάνω από Matplotlib με ωραίες default αισθητικές και «στατιστικά» γραφήματα (διανομές, box/violin, pairplot κ.λπ.).
 
 “Συνταγές” κώδικα (γρήγορα snippets)
-# Matplotlib savefig
+### Matplotlib savefig
 plt.savefig("images/week2/plot.png", dpi=150, bbox_inches="tight")
 
-# Seaborn histplot
+### Seaborn histplot
 sns.histplot(df["amount"], bins=50, kde=True)
 
-# Boxplot
+### Boxplot
 sns.boxplot(data=df, x="is_fraud", y="amount")
 
-# Countplot
+### Countplot
 sns.countplot(data=df, x="is_fraud")
 
-# Heatmap corr
+### Heatmap corr
 sns.heatmap(df.corr(numeric_only=True), annot=False, cmap="viridis")
 
 ### 3–5 συμπεράσματα (παραδείγματα)
