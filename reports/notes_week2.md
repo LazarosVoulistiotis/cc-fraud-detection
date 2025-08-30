@@ -276,3 +276,131 @@ sns.heatmap(df.corr(numeric_only=True), annot=False, cmap="viridis")
 3. Όταν η μεταβλητή έχει long‑tail/πολύ μεγάλες διακυμάνσεις.
 4. Το plt.plot είναι low‑level Matplotlib, το sns.lineplot προσφέρει αισθητική & CI out‑of‑the‑box.
 5. Χρησιμοποίησε numeric_only=True ή επίλεξε μόνο numeric στήλες.
+
+---
+
+# Ημέρα 4 — Κατέβασμα dataset (creditcard.csv) (30–60’)
+
+## Στόχοι
+- Να κατεβάσω και να αποθηκεύσω το ULB **Credit Card Fraud Detection** dataset στο `data/data_raw/`.
+- Να ελέγξω ότι το CSV υπάρχει και είναι προσβάσιμο από τα scripts μου.
+
+## Προϋποθέσεις
+- **Kaggle account** και **API token** (`kaggle.json`).
+- Ενεργό **virtual environment** (.venv) και Git repo έτοιμο.
+
+## Δομή φακέλων (root project)
+```
+cc-fraud-detection/
+├─ data/
+│  ├─ data_raw/     # raw αρχεία όπως κατεβαίνουν
+│  └─ data_work/    # προαιρετικός χώρος εργασίας/αντιγράφων
+└─ ...
+```
+
+## Βήματα
+
+### 1) Εγκατάσταση Kaggle CLI στο venv
+```bat
+pip install --upgrade pip
+pip install kaggle
+kaggle --version
+```
+
+### 2) Τοποθέτηση `kaggle.json` (Windows CMD)
+```bat
+mkdir "%USERPROFILE%\.kaggle"
+copy "C:\Users\ΛΑΖΑΡΟΣ\Downloads\kaggle.json" "%USERPROFILE%\.kaggle\kaggle.json"
+type "%USERPROFILE%\.kaggle\kaggle.json"   :: (προαιρετικό) πρέπει να έχει "username" και "key"
+kaggle --version
+```
+
+> Αν δεις **401/Forbidden** κατά το κατέβασμα, άνοιξε από browser τη σελίδα του dataset και πάτησε “I Understand and Accept”.
+
+### 3) Κατέβασμα στο `data/data_raw/`
+Από **root** του project (`cc-fraud-detection>`):
+```bat
+mkdir data\data_raw 2>nul
+kaggle datasets download -d mlg-ulb/creditcardfraud -p data\data_raw
+```
+
+### 4) Αποσυμπίεση
+```bat
+tar -xf data\data_raw\creditcardfraud.zip -C data\data_raw
+```
+Περιμένουμε να δούμε το αρχείο: `data/data_raw/creditcard.csv`
+
+### 5) (Προαιρετικό) Αντίγραφο εργασίας
+```bat
+mkdir data\data_work 2>nul
+copy /Y "data\data_raw\creditcard.csv" "data\data_work\creditcard.csv"
+```
+
+## Γρήγορος έλεγχος
+```bat
+dir data\data_raw\creditcard.csv
+```
+- Μέγεθος ~150MB
+- Αναμενόμενο shape κατά τη φόρτωση: **(284807, 31)**
+
+## Checklist
+- [ ] Το Kaggle CLI λειτουργεί (`kaggle --version`).
+- [ ] Έγινε download & unzip χωρίς σφάλματα.
+- [ ] Υπάρχει το `data/data_raw/creditcard.csv`.
+- [ ] (Προαιρετικό) Υπάρχει αντίγραφο στο `data/data_work/`.
+- [ ] Daily **git commit & push**.
+
+## Συχνά σφάλματα & λύσεις
+- **401/Forbidden** → Συνδέσου στο Kaggle και αποδέξου τους όρους του dataset.
+- **'kaggle' δεν αναγνωρίζεται** → Ενεργοποίησε `.venv` ή πρόσθεσε το script path στα περιβάλλοντα.
+- **Zip δεν ανοίγει** → Ξανακατέβασε ή χρησιμοποίησε `powershell Expand-Archive`/7‑Zip.
+- **Λάθος path** → Τρέξε εντολές από το **root** του project.
+
+
+---
+
+# Ημέρα 5 — Πρώτο script φόρτωσης (30–45’)
+
+## Στόχοι
+- Να επιβεβαιώσω ότι το dataset φορτώνει σωστά από το `data/data_raw/creditcard.csv`.
+- Να εκτυπώσω **shape** και τις **10 πρώτες γραμμές**.
+- Να κάνω **commit** το πρώτο μου loader script.
+
+## Βήμα 1 — Δημιούργησε `src/01_load_data.py`
+```python
+import pandas as pd
+from pathlib import Path
+
+DATA_PATH = Path("data/data_raw/creditcard.csv")
+
+def main():
+    if not DATA_PATH.exists():
+        raise FileNotFoundError(f"Missing {DATA_PATH}. Put the dataset in data/data_raw/")
+    df = pd.read_csv(DATA_PATH)
+    print("Shape:", df.shape)
+    print(df.head(10).to_string())
+
+if __name__ == "__main__":
+    main()
+```
+
+> 💡 Τρέξε το από το **root** του project ώστε το σχετικό path να δουλέψει.
+
+## Βήμα 2 — Εκτέλεση
+```bat
+python src/01_load_data.py
+```
+**Αναμενόμενο:** `Shape: (284807, 31)` και εκτύπωση των πρώτων 10 γραμμών.
+
+## Βήμα 3 — Git Commit & Push
+```bat
+git add src/01_load_data.py
+git commit -m "feat: add initial data loader (prints head & shape)"
+git push
+```
+
+## Συχνά σφάλματα & λύσεις
+- **FileNotFoundError** → Βεβαιώσου ότι τρέχεις από root, και ότι υπάρχει το `data/data_raw/creditcard.csv`.
+- **ModuleNotFoundError: pandas** → Ενεργοποίησε `.venv` και `pip install pandas`.
+- **UnicodeDecodeError/ParserError** → Δοκίμασε `pd.read_csv(DATA_PATH, encoding="utf-8", engine="python")` ή έλεγξε `sep`.
+- **Μη αναμενόμενο shape** → Επιβεβαίωσε ότι φόρτωσες το σωστό αρχείο και όχι κάποιο άλλο CSV.
