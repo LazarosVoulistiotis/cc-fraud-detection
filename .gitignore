@@ -1,9 +1,17 @@
 # Git ignore rules 
 
 # --- Python env & caches ---
-.venv/
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+pip-wheel-metadata/
 
 # --- Jupyter ---
 .ipynb_checkpoints/
@@ -20,7 +28,7 @@ Thumbs.db
 data/data_raw/*
 !data/data_raw/.gitkeep
 data/data_work/*
-!data/data_work/.gitkeep        
+!data/data_work/.gitkeep
 data/**/*.zip
 data/**/*.7z
 data/**/*.gz
