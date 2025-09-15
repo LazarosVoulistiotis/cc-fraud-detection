@@ -91,7 +91,7 @@ cc-fraud-detection/
 
 ## 📌 Project Management
 
-Trello Board → Kanban (To Do / In Progress / Done)
+Trello Board → [Kanban (To Do / In Progress / Done)](https://trello.com/b/c9be9zsO/my-trello-board)
 
 ## 🚀 Deployment (Planned)
 
