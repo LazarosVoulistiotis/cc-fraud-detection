@@ -1,96 +1,117 @@
-# Credit Card Fraud Detection
+# 💳 Credit Card Fraud Detection  
 
-## 📌 Project Overview
-This project focuses on building a **Credit Card Fraud Detection system** using Python and Machine Learning.  
-It explores real-world financial transaction data, applies **data preprocessing**, **feature engineering**, and trains multiple ML algorithms to classify fraudulent vs. legitimate transactions.  
+## 📌 Project Overview  
+A **real-world inspired system** for detecting fraudulent credit card transactions using **Python** and **Machine Learning**.  
 
-The goal is to simulate a production-like workflow that is **practical for companies** and **reproducible for research**.
+This project simulates a **production-ready ML pipeline**:  
+- Data preprocessing & feature engineering  
+- Training and comparing multiple ML models  
+- Evaluating trade-offs between false positives and false negatives  
+- Future deployment as a REST API & web app  
+
+The goal is to deliver something **practical for companies** and **reproducible for research**.
 
 ---
 
-## 📊 Dataset
+## 📊 Dataset  
 - Source: [Kaggle – Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)  
-- Contains **284,807 transactions**, of which **492 are fraudulent (0.17%)**.  
-- Highly **imbalanced dataset** → requires special handling (resampling / anomaly detection).
+- **284,807 transactions**, of which **492 are fraudulent (0.17%)**  
+- Highly **imbalanced dataset** → handled via resampling & anomaly detection techniques  
 
-⚠️ Note: Raw dataset is stored in `data/data_raw/` (ignored by Git).
-
----
-
-## 🛠️ Technologies & Libraries
-- **Python 3.13.0**
-- **Jupyter Notebooks** → interactive experimentation
-- **NumPy** → numerical computing with arrays and vectors
-- **Pandas** → dataset handling (CSV, Excel, transformations)
-- **Matplotlib** → data visualization
-- **Seaborn** → statistical plots
-- **Scikit-learn** → machine learning algorithms (logistic regression, decision trees, random forests, etc.)
-- **ipykernel** → Jupyter integration with virtual environments
+⚠️ Dataset stored in `data/data_raw/` (ignored by Git).
 
 ---
 
-## 🔬 Methods
-1. **Data Preprocessing**
-   - Handle missing values
-   - Normalize numerical features
-   - Handle class imbalance (SMOTE / undersampling)
-2. **Exploratory Data Analysis (EDA)**
-   - Fraud vs. non-fraud distribution
-   - Correlations, PCA visualization
-3. **Model Training**
-   - Logistic Regression
-   - Decision Trees
-   - Random Forest
-   - Gradient Boosting
-   - Neural Networks (optional, advanced)
-4. **Model Evaluation**
-   - Accuracy, Precision, Recall, F1-score
-   - ROC-AUC
-   - Confusion Matrix
-   - Cross-validation
+## 🛠️ Technologies & Libraries  
+- **Python 3.13.0**  
+- **Jupyter Notebooks** → experimentation  
+- **NumPy** → numerical computing  
+- **Pandas** → data handling  
+- **Matplotlib** & **Seaborn** → visualization  
+- **Scikit-learn** → ML models & evaluation  
+- **ipykernel** → Jupyter integration  
 
 ---
 
-## 📈 Results
-- Will include comparison of models (tables + plots).
-- ROC curves for performance visualization.
-- Discussion of trade-offs (false positives vs. false negatives).
+## 🔬 Methods  
+1. **Data Preprocessing**  
+   - Handle missing values  
+   - Normalize numerical features  
+   - Manage class imbalance (SMOTE / undersampling)  
+
+2. **Exploratory Data Analysis (EDA)**  
+   - Fraud vs. non-fraud distribution  
+   - Correlations, PCA visualization  
+
+3. **Model Training**  
+   - Logistic Regression  
+   - Decision Trees  
+   - Random Forest  
+   - Gradient Boosting  
+   - Neural Networks (optional, advanced)  
+
+4. **Model Evaluation**  
+   - Accuracy, Precision, Recall, F1-score  
+   - ROC-AUC & PR-AUC  
+   - Confusion Matrix  
+   - Cross-validation  
 
 ---
 
-## ✅ Project Structure
-cc-fraud-detection/ <br>
-│── data/ <br>
-│ └── data_raw/ # raw dataset (ignored in git) <br>
-│── notebooks/ # Jupyter notebooks (EDA, modeling, results) <br>
-│── reports/ <br>
-│ └── figures/ # plots, visualizations <br>
-│── src/ # Python source code <br>
-│── logs/ # logs during training (ignored in git) <br>
-│── models/ # saved models (ignored in git) <br>
-│── requirements.txt # Python dependencies <br>
-│── .gitignore <br>
-│── README.md <br>
+## 📈 Results  
+- Comparative results of models (tables + plots)  
+- ROC & PR curves for visualization  
+- Discussion of trade-offs (false positives vs. false negatives)  
 
+📌 *This section will be continuously updated as experiments progress.*
 
 ---
 
-## 📌 Project Management
-- **Trello Board**: [(https://trello.com/invite/b/68a414f9be0ed9b54d51fbb9/ATTIcda162497a0904de2dc75948b466334e365904DC/my-trello-board)]  
-  Kanban style → *To Do / In Progress / Done* for tasks.
+## ✅ Project Structure  
+```bash
+cc-fraud-detection/
+├── data/
+│   └── data_raw/        # raw dataset (ignored in git)
+├── notebooks/           # Jupyter notebooks (EDA, modeling, results)
+├── reports/
+│   └── figures/         # plots, visualizations
+├── src/                 # Python source code
+├── logs/                # training logs (ignored in git)
+├── models/              # saved models (ignored in git)
+├── requirements.txt     # Python dependencies
+├── .gitignore
+└── README.md
 
----
 
-## 🚀 Deployment (Future Work)
-- Wrap best model into a **REST API** (FastAPI or Flask).  
-- Build a simple **UI** (Streamlit / Flask web app).  
-- (Optional) Deploy to **Heroku / AWS / Azure** for cloud readiness.
+Project Management
 
----
+Trello Board → Kanban (To Do / In Progress / Done)
 
-## 👤 Author
-**Lazaros Voulistiotis**  
-- BSc Computer Science Student (Final Year)  
-- Aspiring Machine Learning Engineer  
-- GitHub: [https://github.com/LazarosVoulistiotis]  
-- LinkedIn: [https://www.linkedin.com/in/lazaros-voulistiotis/]  
+🚀 Deployment (Planned)
+
+Serve best model via REST API (FastAPI / Flask)
+
+Simple UI (Streamlit / Flask)
+
+Optional cloud deployment: Heroku / AWS / Azure
+
+🎓 Certifications & Skills Acquired
+
+To support this project, I completed industry-recognized certifications, ensuring both theoretical grounding and practical skills:
+
+Certification / Course	Provider	Month Completed	Linked Report Section
+Supervised Machine Learning: Regression & Classification	Coursera (Stanford / DeepLearning.AI)	Month 1	Intro & Background
+Data Science with Python	Great Learning Academy	Month 1	Intro & Background
+Python, Pandas, Data Visualization (Micro-courses)	Kaggle Learn	Month 1–2	Data & Methodology
+Machine Learning with Python (IBM Digital Badge)	IBM Cognitive Class	Month 2	Data & Methodology
+Intermediate Machine Learning	Kaggle Learn	Month 3	Experiments & Modeling
+Feature Engineering	Kaggle Learn	Month 3	Experiments & Modeling
+ML Explainability (SHAP, LIME)	Kaggle Learn	Month 3–4	Results & Explainability
+Docker Essentials	IBM	Month 5	Deployment
+AWS Cloud Practitioner Essentials	AWS Training	Month 5	Deployment
+Google Cloud Skill Badges (ML on GCP, Responsible AI)	Google Cloud	Month 5	Deployment
+Deploy Web App with Containers	Microsoft Learn	Month 5	Deployment
+👤 Author
+
+Lazaros Voulistiotis
+🎓 BSc Computer Science (Final Year) | Aspiring Machine Learning Engineer
