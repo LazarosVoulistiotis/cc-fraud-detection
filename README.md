@@ -1,5 +1,10 @@
 # 💳 Credit Card Fraud Detection  
 
+![Python](https://img.shields.io/badge/python-3.13-blue)  
+![Status](https://img.shields.io/badge/status-in%20progress-yellow)  
+
+---
+
 ## 📌 Project Overview  
 A **real-world inspired system** for detecting fraudulent credit card transactions using **Python** and **Machine Learning**.  
 
@@ -81,37 +86,39 @@ cc-fraud-detection/
 ├── requirements.txt     # Python dependencies
 ├── .gitignore
 └── README.md
+```
+---
 
-
-Project Management
+## 📌 Project Management
 
 Trello Board → Kanban (To Do / In Progress / Done)
 
-🚀 Deployment (Planned)
+## 🚀 Deployment (Planned)
 
-Serve best model via REST API (FastAPI / Flask)
+- Serve best model via REST API (FastAPI / Flask)
+- Simple UI (Streamlit / Flask)
+- Optional cloud deployment: Heroku / AWS / Azure
 
-Simple UI (Streamlit / Flask)
-
-Optional cloud deployment: Heroku / AWS / Azure
-
-🎓 Certifications & Skills Acquired
+## 🎓 Certifications & Skills Acquired
 
 To support this project, I completed industry-recognized certifications, ensuring both theoretical grounding and practical skills:
 
-Certification / Course	Provider	Month Completed	Linked Report Section
-Supervised Machine Learning: Regression & Classification	Coursera (Stanford / DeepLearning.AI)	Month 1	Intro & Background
-Data Science with Python	Great Learning Academy	Month 1	Intro & Background
-Python, Pandas, Data Visualization (Micro-courses)	Kaggle Learn	Month 1–2	Data & Methodology
-Machine Learning with Python (IBM Digital Badge)	IBM Cognitive Class	Month 2	Data & Methodology
-Intermediate Machine Learning	Kaggle Learn	Month 3	Experiments & Modeling
-Feature Engineering	Kaggle Learn	Month 3	Experiments & Modeling
-ML Explainability (SHAP, LIME)	Kaggle Learn	Month 3–4	Results & Explainability
-Docker Essentials	IBM	Month 5	Deployment
-AWS Cloud Practitioner Essentials	AWS Training	Month 5	Deployment
-Google Cloud Skill Badges (ML on GCP, Responsible AI)	Google Cloud	Month 5	Deployment
-Deploy Web App with Containers	Microsoft Learn	Month 5	Deployment
-👤 Author
+| Certification / Course | Provider | Month Completed | Linked Report Section |
+|-------------------------|----------|-----------------|------------------------|
+| Supervised Machine Learning: Regression & Classification | Coursera (Stanford / DeepLearning.AI) | Month 1 | Intro & Background |
+| Data Science with Python | Great Learning Academy | Month 1 | Intro & Background |
+| Python, Pandas, Data Visualization (Micro-courses) | Kaggle Learn | Month 1–2 | Data & Methodology |
+| Machine Learning with Python (IBM Digital Badge) | IBM Cognitive Class | Month 2 | Data & Methodology |
+| Intermediate Machine Learning | Kaggle Learn | Month 3 | Experiments & Modeling |
+| Feature Engineering | Kaggle Learn | Month 3 | Experiments & Modeling |
+| ML Explainability (SHAP, LIME) | Kaggle Learn | Month 3–4 | Results & Explainability |
+| Docker Essentials | IBM | Month 5 | Deployment |
+| AWS Cloud Practitioner Essentials | AWS Training | Month 5 | Deployment |
+| Google Cloud Skill Badges (ML on GCP, Responsible AI) | Google Cloud | Month 5 | Deployment |
+| Deploy Web App with Containers | Microsoft Learn | Month 5 | Deployment |
+
+
+## 👤 Author
 
 Lazaros Voulistiotis
 🎓 BSc Computer Science (Final Year) | Aspiring Machine Learning Engineer
