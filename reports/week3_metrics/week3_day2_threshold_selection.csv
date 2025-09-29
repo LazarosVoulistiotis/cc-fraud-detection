@@ -1,0 +1,2 @@
+C,threshold,Accuracy,Precision,Recall,F1,ROC-AUC,PR-AUC(AP),FPR,Specificity,TP,FP,FN,TN,Predicted_Pos,Support_Pos,Support_Neg
+10,0.2678,0.9365,0.0232,0.9014,0.0452,0.9664,0.6886,0.0635,0.9365,128,5395,14,79581,5523,142,84976

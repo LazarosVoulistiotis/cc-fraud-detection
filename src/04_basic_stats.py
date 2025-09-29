@@ -11,7 +11,7 @@ DATA_PATH = Path("data/data_raw/creditcard.csv")
 TARGET_CANDIDATES = ["Class", "class", "is_fraud"]
 
 # Φάκελος εξόδων όπου θα αποθηκευτεί το CSV με τα βασικά στατιστικά
-OUT_DIR = Path("reports/week3_day3")  # όπου θα σωθούν τα νούμερα
+OUT_DIR = Path("reports/week3_metrics")  # όπου θα σωθούν τα νούμερα
 
 def find_target_column(df) -> str:
     """

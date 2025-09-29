@@ -224,6 +224,120 @@ def plot_amount_boxplot_log(df: pd.DataFrame, out_dir: Path, transparent: bool =
     save_fig("amount_by_class_box_log", out_dir, transparent=transparent)
     plt.close()
 
+# --- Correlation: All numeric -------------------------------------------------
+def plot_corr_heatmap_all(df: pd.DataFrame, out_dir: Path, transparent: bool = False):
+    """
+    Heatmap όλων των αριθμητικών μεταβλητών (Pearson).
+    Σταθερή κλίμακα [-1, 1], τετράγωνο grid, λεπτές γραμμές για καθαρότητα.
+    """
+    num_df = df.select_dtypes(include="number")  # ασφαλές για pandas >=1.x
+    corr_all = num_df.corr(method="pearson")
+
+    fig = plt.figure(figsize=(11, 9))
+    fig.patch.set_facecolor("white")
+
+    ax = sns.heatmap(
+        corr_all,
+        cmap="coolwarm",
+        vmin=-1, vmax=1, center=0,                 # συνεπής χρωματική κλίμακα
+        square=True,
+        linewidths=.3, linecolor="white",          # καθαρά όρια κελιών
+        cbar_kws={"shrink": .85, "label": "Pearson r"}
+    )
+    ax.set_title("Correlation Heatmap (All Numeric Features)", pad=12, fontsize=16)
+    plt.xticks(rotation=60, ha="right")
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+    save_fig("corr_heatmap_full", out_dir, transparent=transparent)
+    plt.close()
+
+
+# --- Correlation: Time + V1–V28 + Amount + Class (masked lower triangle) -----
+def plot_corr_heatmap_pca_masked(df: pd.DataFrame, out_dir: Path, transparent: bool = False):
+    """
+    Heatmap για Time, V1–V28, Amount, Class με τριγωνική μάσκα.
+    Σημείωση: V1–V28 είναι PCA components → συχνά ασυσχέτιστα μεταξύ τους
+    και οι συσχετίσεις δεν ερμηνεύονται όπως “raw” features.
+    """
+    pca_cols = [c for c in df.columns if c.startswith("V") and c[1:].isdigit()]
+    cols = ["Time"] + pca_cols + ["Amount", "Class"]
+    sub = df[cols].copy()
+
+    corr_sub = sub.corr(method="pearson")
+    mask = np.triu(np.ones_like(corr_sub, dtype=bool))   # κρατάμε το κάτω τρίγωνο
+
+    fig = plt.figure(figsize=(12, 10))
+    fig.patch.set_facecolor("white")
+
+    ax = sns.heatmap(
+        corr_sub, mask=mask,
+        cmap="coolwarm", vmin=-1, vmax=1, center=0,
+        square=True, linewidths=.3, linecolor="white",
+        cbar_kws={"shrink": .85, "label": "Pearson r"}
+    )
+    ax.set_title("Correlation Heatmap (Time, V1–V28, Amount, Class)", pad=12, fontsize=16)
+    plt.xticks(rotation=60, ha="right")
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+    save_fig("corr_heatmap_pca_masked", out_dir, transparent=transparent)
+    plt.close()
+
+
+# --- Correlation vs target Class (barplot Top-N by |corr|) -------------------
+def plot_corr_with_class_bar(df: pd.DataFrame, out_dir: Path, top_n: int = 15, transparent: bool = False):
+    """
+    Οριζόντιο barplot με τις Top-N μεταβλητές ως προς |corr| με το Class.
+    Χρήσιμο για γρήγορο feature scouting (όχι για αιτιότητα).
+    """
+    corr_series = (
+        df.select_dtypes("number")
+          .corr(method="pearson")["Class"]
+          .drop("Class")
+          .sort_values(key=lambda s: s.abs(), ascending=False)
+    )
+
+    fig = plt.figure(figsize=(9.5, 6.5))
+    fig.patch.set_facecolor("white")
+    ax = corr_series.head(top_n)[::-1].plot(
+        kind="barh", color="#1f77b4", edgecolor="black", linewidth=0.8
+    )
+    ax.set_title(f"Top {top_n} |Correlation| with Class", pad=10, fontsize=16)
+    ax.set_xlabel("Pearson r (abs. sorted)")
+    ax.set_ylabel("Feature")
+    # ετικέτες πάνω στις μπάρες
+    for p in ax.patches:
+        ax.annotate(f"{p.get_width():.2f}",
+                    (p.get_x() + p.get_width(), p.get_y() + p.get_height()/2),
+                    va="center", ha="left", fontsize=10, xytext=(3, 0),
+                    textcoords="offset points")
+    plt.grid(axis="x", linestyle="--", alpha=0.3)
+    plt.tight_layout()
+    save_fig("corr_with_class_top", out_dir, transparent=transparent)
+    plt.close()
+
+
+# --- Optional: Hierarchical clustermap ---------------------------------------
+def plot_corr_clustermap_all(df: pd.DataFrame, out_dir: Path, transparent: bool = False):
+    """
+    Clustermap του correlation matrix για ομαδοποίηση χαρακτηριστικών.
+    Προσοχή: βαρύ σε μεγάλα matrices—χρησιμοποίησέ το προαιρετικά.
+    """
+    num_df = df.select_dtypes(include="number")
+    corr_all = num_df.corr(method="pearson")
+
+    g = sns.clustermap(
+        corr_all,
+        cmap="coolwarm", vmin=-1, vmax=1, center=0,
+        figsize=(11, 11), linewidths=.2,
+        dendrogram_ratio=(.15, .05),
+        cbar_kws={"shrink": .8, "label": "Pearson r"}
+    )
+    g.fig.suptitle("Correlation Clustermap (All Numeric Features)", y=1.02, fontsize=16)
+    # το clustermap έχει δικό του save (g.savefig)
+    g.savefig(out_dir / "corr_clustermap_full.png", dpi=150, bbox_inches="tight", transparent=transparent)
+    plt.close()
+
+
 # =========================
 # Main (CLI)
 # =========================
@@ -253,6 +367,12 @@ def main():
     plot_time_hist_by_class(df, out_dir, transparent=args.transparent)
     plot_amount_by_class_overlay(df, out_dir, transparent=args.transparent)
     plot_amount_boxplot_log(df, out_dir, transparent=args.transparent)
+        # Correlation plots
+    plot_corr_heatmap_all(df, out_dir, transparent=args.transparent)
+    plot_corr_heatmap_pca_masked(df, out_dir, transparent=args.transparent)
+    plot_corr_with_class_bar(df, out_dir, top_n=15, transparent=args.transparent)
+    # προαιρετικό (αν θες και ιεραρχική ομαδοποίηση):
+    plot_corr_clustermap_all(df, out_dir, transparent=args.transparent)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,2 @@
+timestamp,data_path,target,total_rows,fraud_cases,nonfraud_cases,fraud_rate_pct
+2025-09-29 23:26:43,data\data_raw\creditcard.csv,Class,284807,492,284315,0.172749

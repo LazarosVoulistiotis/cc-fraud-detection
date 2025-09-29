@@ -38,8 +38,8 @@ from sklearn.metrics import (
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 DATA_PATH = BASE_DIR / "data" / "data_raw" / "creditcard.csv"
-IMAGES_DIR = BASE_DIR / "images" / "week3"
-REPORTS_DIR = BASE_DIR / "reports"
+IMAGES_DIR = BASE_DIR / "reports" / "figures" /"week3"
+REPORTS_DIR = BASE_DIR / "reports" / "week3_metrics"
 
 TARGET_CANDIDATES = ["Class", "class", "is_fraud"]
 CS = [0.01, 0.1, 1, 10]         # grid σε C (λογαριθμική κλίμακα)

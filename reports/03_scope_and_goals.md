@@ -1,31 +1,32 @@
 # Week 3 · Day 5 — Scope & Goals
 
-## In-scope (γίνονται τώρα)
-- **Supervised binary classification** (fraud vs non-fraud) με το Kaggle `creditcard.csv`.
+## In-scope (τρέχουσα φάση)
+- **Supervised binary classification** (fraud vs non-fraud) με το dataset Kaggle `creditcard.csv`.
 - **Offline training & evaluation** σε train/validation/test splits.
-- **Μετρικές**: Precision, Recall, F1, **ROC-AUC & PR-AUC**.
-- **Threshold tuning** (optimize για υψηλό Recall με ελεγχόμενο Precision).
-- **Baseline μοντέλο**: Logistic Regression (με τυπικό scaling & class_weight όπου χρειάζεται).
+- **Μετρικές αξιολόγησης**: Precision, Recall, F1, **ROC-AUC & PR-AUC**.
+- **Threshold tuning** με στόχο υψηλό Recall (να μη χάνονται απάτες) με ελεγχόμενο Precision (να μην αυξηθούν υπερβολικά τα false positives).
+- **Baseline μοντέλο**: Logistic Regression (με scaling & χρήση `class_weight` λόγω ανισορροπίας).
 
-## Out-of-scope (προς το παρόν)
+## Out-of-scope (προσωρινά εκτός)
 - **Real-time streaming / low-latency inference**.
-- **Concept drift handling** & online/continual learning.
+- **Αντιμετώπιση concept drift** και online/continual learning.
 - **Feature store / feature registry**.
-- **Deep hyperparameter tuning** (προχωρημένο search, π.χ. Optuna/Bayes).
+- **Deep hyperparameter tuning** (π.χ. Optuna/Bayesian search).
 
-## Κριτήρια επιτυχίας (μετρήσιμα)
-- **Recall (Fraud)** ≥ **0.90** με **Precision** ≥ **0.10** (αρχικό target για ισορροπία FN/FP).
-- **PR-AUC** > baseline (βελτίωση έναντι απλής κατωφλιοποίησης/τυχαίου).
-- Τεκμηριωμένη επιλογή threshold βάσει **PR curve** & **cost trade-offs**.
-- Αναπαραγωγιμότητα: scripts/notebooks που τρέχουν end-to-end.
+## Κριτήρια επιτυχίας
+- **Recall (Fraud)** ≥ **0.90** με **Precision** ≥ **0.10** (αρχικός στόχος ισορροπίας FN/FP).
+- **PR-AUC** σημαντικά καλύτερο από baseline/random.
+- Επιλογή threshold βασισμένη σε **PR curves** και ανάλυση κόστους.
+- **Αναπαραγωγιμότητα**: scripts/notebooks που τρέχουν end-to-end χωρίς “manual hacks”.
 
 ## Παραδοτέα
-- **Κώδικας**: `src/` scripts (φόρτωση, baseline, αξιολόγηση, plots).
-- **Report**: τεχνική αναφορά στο `reports/` (EDA, μέθοδοι, μετρικές, συμπεράσματα).
-- **Notebook(s)**: για EDA/plots/πειραματισμούς (στο `notebooks/`).
-- **REST API mock** (μήνας **3–4**): απλό endpoint που φορτώνει αποθηκευμένο μοντέλο και κάνει predict σε single/mini-batch (χωρίς real-time infra).
-- **Demo UI (προαιρετικά)**: μικρό frontend για δοκιμή του API.
+- **Κώδικας**: `src/` scripts (data loading, baseline, evaluation, plots).
+- **Report**: τεχνική αναφορά στο `reports/` (EDA, μεθοδολογία, αποτελέσματα, συμπεράσματα).
+- **Notebook(s)**: για EDA και πειραματισμούς (στο `notebooks/`).
+- **REST API mock** (μήνας **3–4**): endpoint που φορτώνει αποθηκευμένο μοντέλο και κάνει predict σε εισόδους (proof-of-concept).
+- **Demo UI (προαιρετικό)**: απλό interface για δοκιμή του API.
 
 ## Σημειώσεις
-- Εστίαση στην **ερμηνευσιμότητα** και στην **ισορροπία σφαλμάτων** (FN vs FP).
-- Οι στόχοι/όρια μπορεί να αναθεωρηθούν μετά τα πρώτα πειράματα validation.
+- Ιδιαίτερη έμφαση σε **ερμηνευσιμότητα μοντέλου** (feature importances/SHAP).
+- Εξισορρόπηση σφαλμάτων **FN vs FP**: FN κοστίζουν οικονομικά, FP κοστίζουν σε εμπειρία πελάτη.
+- Οι στόχοι θα αναθεωρούνται μετά τα πρώτα αποτελέσματα validation.

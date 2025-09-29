@@ -1,0 +1,19 @@
+{
+  "C": 10,
+  "threshold": 0.2678,
+  "Accuracy": 0.9365,
+  "Precision": 0.0232,
+  "Recall": 0.9014,
+  "F1": 0.0452,
+  "ROC-AUC": 0.9664,
+  "PR-AUC(AP)": 0.6886,
+  "FPR": 0.0635,
+  "Specificity": 0.9365,
+  "TP": 128,
+  "FP": 5395,
+  "FN": 14,
+  "TN": 79581,
+  "Predicted_Pos": 5523,
+  "Support_Pos": 142,
+  "Support_Neg": 84976
+}
