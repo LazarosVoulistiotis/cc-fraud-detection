@@ -7,8 +7,8 @@
 - Άρα δεν μας ενδιαφέρει το accuracy — χρειαζόμαστε **metrics που εστιάζουν στην θετική κλάση** (fraud).
 
 ### Πρακτικές επιπτώσεις
-- **Stratified split**: διατηρεί το ποσοστό της θετικής κλάσης σε train/test (π.χ. `train_test_split(..., stratify=y)` ή `StratifiedKFold`).
-- **Κατάλληλα metrics**: **PR-AUC** (Precision-Recall AUC), **Recall**, **Precision**, **F1**, **Confusion Matrix**.
+- **Stratified split**: για να διατηρούμε το ίδιο fraud rate σε train/test, ώστε να είναι αντιπροσωπευτικό (π.χ. `train_test_split(..., stratify=y)` ή `StratifiedKFold`).
+- **Κατάλληλα metrics**: **PR-AUC** (Precision-Recall AUC), **Recall**, **Precision**, **F1**, **Confusion Matrix** 
 - **Sampling (αργότερα, προσεκτικά)**:
   - **Under-sampling** των 0 (legit) για ταχύτητα/ισορροπία.
   - **Over-sampling** ή **SMOTE** για την 1 (fraud) — *μόνο στο training set και πάντα μέσα στα folds* για αποφυγή data leakage.
@@ -81,11 +81,7 @@
 - **Precision/Recall/F1** στα παραπάνω thresholds
 - (προαιρετικά) **Recall@FPR=x** (π.χ. FPR=1%) ή **Precision@top-k** (π.χ. top 0.1% υψηλότερων scores)
 
-**Outputs που θα αποθηκεύουμε σε `reports/figures/`:**
-- `pr_curve_baseline.png`
-- `roc_curve_baseline.png`
-- `cm_thr_0.50.png` και `cm_thr_tuned.png`  
-(και αντίστοιχο `reports/metrics/metrics_baseline.csv` για αριθμούς)
+**Outputs θα αποθηκεύουμε σε `reports/figures/`:**
 
 ---
 
@@ -119,11 +115,6 @@
 
 - Οριστικοποιημένες **προκλήσεις & metrics** (αυτό το έγγραφο).
 - **EDA plots** και **correlation heatmaps** (ήδη σε `reports/figures/`).
-- **Baseline αξιολόγηση** (PR/ROC curves, confusion matrices) με CSV και εικόνες:
-  - `reports/figures/pr_curve_baseline.png`
-  - `reports/figures/roc_curve_baseline.png`
-  - `reports/figures/cm_thr_0.50.png`
-  - `reports/figures/cm_thr_tuned.png`
-  - `reports/metrics/metrics_baseline.csv`
+- **Baseline αξιολόγηση** (PR/ROC curves, confusion matrices) με CSV και εικόνες
 
 > Επόμενο βήμα (Μήνας 2): baseline μοντέλο (π.χ. Logistic Regression + scaling), threshold tuning με στόχο **Recall ≥ 0.90** και αναφορά αποτελεσμάτων στο README.
