@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 26c3878 (Update 05_eda_time_amount.md)
 # Εβδομάδα 5 — Ευρήματα EDA (Time & Amount)
 
 - **Fraud rate (συνολικό):** 0.1727%
