@@ -1,0 +1,32 @@
+{
+  "rows": 284807,
+  "fraud_rate": 0.001727485630620034,
+  "amount": {
+    "skew_desc": "πολύ έντονα δεξιά ασύμμετρη (heavy right-skew)",
+    "p99": 1017.9700000000012,
+    "pct_above_p99": 0.01000326536917983
+  },
+  "time": {
+    "skew_desc": "σχετικά συμμετρική/ήπια ασύμμετρη"
+  },
+  "top_hours_by_fraud_rate": [
+    {
+      "hour": 2,
+      "rate": 0.017127403846153848
+    },
+    {
+      "hour": 4,
+      "rate": 0.01041195110909914
+    },
+    {
+      "hour": 3,
+      "rate": 0.004868270332187858
+    }
+  ],
+  "artifacts": {
+    "stats_csv": "reports/week5_eda_time_amount/eda_time_amount_stats.csv",
+    "stats_md": "reports/week5_eda_time_amount/eda_time_amount_stats.md",
+    "summary_md": "reports/05_eda_time_amount.md",
+    "figures_dir": "reports/figures/week5"
+  }
+}
