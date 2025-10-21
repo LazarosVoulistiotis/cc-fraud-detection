@@ -29,6 +29,8 @@ data/data_raw/*
 !data/data_raw/.gitkeep
 data/data_work/*
 !data/data_work/.gitkeep
+data/data_interim/**       
+!data/data_interim/.gitkeep
 data/**/*.zip
 data/**/*.7z
 data/**/*.gz

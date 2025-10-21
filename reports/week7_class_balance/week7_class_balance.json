@@ -1,0 +1,30 @@
+{
+  "target": "Class",
+  "summary": {
+    "labels": [
+      "0",
+      "1"
+    ],
+    "counts": {
+      "0": 284315,
+      "1": 492
+    },
+    "percents": {
+      "0": 99.82725143693798,
+      "1": 0.1727485630620034
+    },
+    "total": 284807,
+    "fraud_rate": 0.1727485630620034,
+    "major_to_minor_ratio": 577.8760162601626,
+    "one_positive_per_n": 578.8760162601626,
+    "positive_label": "1",
+    "values_for_plot": [
+      284315,
+      492
+    ]
+  },
+  "business_notes": {
+    "imbalance": "Η θετική κλάση είναι σπάνια — προτείνεται PR-AUC, Recall@k, cost-sensitive metrics, stratified split, class weights/SMOTE και thresholding με βάση κόστος.",
+    "one_positive_per_n": 578.8760162601626
+  }
+}
