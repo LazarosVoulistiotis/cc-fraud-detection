@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Χρήση:
+Ενεργοποίηση venv
+Git Bash / WSL / Linux / macOS (Bash/Zsh): source .venv/Scripts/activate
+CMD: .venv\Scripts\activate
+
 python src/09_logreg_baseline.py --data data/data_raw/creditcard.csv \
     --outdir reports/week9_baseline --figdir reports/figures/week9 \
     --model-path models/logreg_baseline.joblib --test-size 0.20 --seed 42 \
