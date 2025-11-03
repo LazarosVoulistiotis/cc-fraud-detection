@@ -1,0 +1,15 @@
+{
+  "data": "data/data_raw/creditcard.csv",
+  "outdir": "reports/week9_baseline",
+  "figdir": "reports/figures/week9",
+  "model_path": "models/logreg_baseline.joblib",
+  "test_size": 0.2,
+  "seed": 42,
+  "scaler": "standard",
+  "class_weight": "balanced",
+  "threshold": 0.5,
+  "optimize": "none",
+  "n_thresholds": 101,
+  "cost_fp": 1.0,
+  "cost_fn": 20.0
+}

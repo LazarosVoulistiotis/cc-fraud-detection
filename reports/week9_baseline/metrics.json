@@ -1,0 +1,45 @@
+{
+  "model": "LogisticRegression(baseline)",
+  "test_size": 0.2,
+  "scaler": "standard",
+  "class_weight": "balanced",
+  "threshold_default": 0.5,
+  "precision": 0.06097560975609756,
+  "recall": 0.9183673469387755,
+  "f1": 0.11435832274459974,
+  "roc_auc": 0.9720834996210077,
+  "pr_auc": 0.7189705771419241,
+  "recall_at_precision_0.90": 0.0,
+  "precision_at_recall_0.90": 0.14149443561208266,
+  "optimize": "none",
+  "best_threshold": null,
+  "best_threshold_metrics": null,
+  "cost_fp": 1.0,
+  "cost_fn": 20.0,
+  "artifacts": {
+    "model_path": "models\\logreg_baseline.joblib",
+    "metrics_json": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_baseline\\metrics.json",
+    "classification_report": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_baseline\\classification_report.txt",
+    "coefficients_csv": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_baseline\\coefficients_sorted.csv",
+    "sweep_csv": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_baseline\\threshold_sweep.csv",
+    "fig_roc": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9\\week9_logreg_roc.png",
+    "fig_pr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9\\week9_logreg_pr.png",
+    "fig_conf_default": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9\\week9_logreg_confusion_default.png",
+    "fig_conf_best": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9\\week9_logreg_confusion_best.png",
+    "fig_prec_rec_vs_thr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9\\week9_prec_recall_vs_threshold.png",
+    "fig_cost_vs_thr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9\\week9_cost_vs_threshold.png",
+    "log_file": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_baseline\\run_20251103-052430.log"
+  },
+  "run": {
+    "run_id": "20251103-052430",
+    "git_rev": "b97b0f8",
+    "env": {
+      "python": "3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)]",
+      "os": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.1.3",
+      "pandas": "2.3.2",
+      "scikit_learn": "1.7.1"
+    },
+    "timestamp_utc": "2025-11-03T03:24:36Z"
+  }
+}
