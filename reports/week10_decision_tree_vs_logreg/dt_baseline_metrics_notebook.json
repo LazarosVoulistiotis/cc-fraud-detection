@@ -1,0 +1,36 @@
+{
+  "model_type": "decision_tree",
+  "variant": "baseline",
+  "params": {
+    "ccp_alpha": 0.0,
+    "class_weight": null,
+    "criterion": "gini",
+    "max_depth": null,
+    "max_features": null,
+    "max_leaf_nodes": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "random_state": 42,
+    "splitter": "best"
+  },
+  "metrics": {
+    "accuracy": 0.9990344440153085,
+    "precision_pos": 0.7263157894736842,
+    "recall_pos": 0.7040816326530612,
+    "f1_pos": 0.7150259067357513,
+    "roc_auc": 0.8518122006821862,
+    "confusion_matrix": [
+      [
+        56838,
+        26
+      ],
+      [
+        29,
+        69
+      ]
+    ]
+  }
+}

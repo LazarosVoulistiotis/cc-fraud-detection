@@ -1,0 +1,27 @@
+{
+  "model_type": "decision_tree",
+  "variant": "tuned",
+  "params": {
+    "class_weight": "balanced",
+    "max_depth": 3,
+    "min_samples_leaf": 1,
+    "min_samples_split": 50
+  },
+  "metrics": {
+    "accuracy": 0.955672202520979,
+    "precision_pos": 0.03344867358708189,
+    "recall_pos": 0.8877551020408163,
+    "f1_pos": 0.0644683216005928,
+    "roc_auc": 0.9456269810963214,
+    "confusion_matrix": [
+      [
+        54350,
+        2514
+      ],
+      [
+        11,
+        87
+      ]
+    ]
+  }
+}

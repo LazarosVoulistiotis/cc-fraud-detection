@@ -1,0 +1,28 @@
+Κύρια πεδία:
+- script_version: git short SHA του κώδικα που έτρεξε (ιχνηλασιμότητα).
+- data_path, rows, cols: από πού διαβάστηκαν τα δεδομένα και ποιο είναι το σχήμα τους.
+- fraud_rate_overall: συνολικό ποσοστό απάτης (baseline για σύγκριση με “ανά ώρα”).
+- corr:
+	- method (π.χ. pearson/spearman), sample (αν έγινε sampling), top_n.
+	- top_corr_with_target_signed: dict feature → signed corr (με πρόσημο). Είναι η λίστα κατάταξης με κατεύθυνση σχέσης.
+	- csv_all_signed: διαδρομή προς CSV με όλες τις συσχετίσεις feature→Class.
+- engineered_features: ποια νέα features προστέθηκαν (π.χ. Hour, hour_sin, hour_cos, Amount_log1p).
+- fraud_by_hour:
+	- rates: dict ώρα (0–23) → fraud rate (χρήσιμο για time-aware thresholds).
+	- counts: dict ώρα → πλήθος δειγμάτων (για να επιβεβαιώνεις ότι spikes δεν είναι από λίγα δείγματα).
+- mi: αν υπολογίστηκε Mutual Information
+	- computed (True/False), topn, csv (διαδρομή CSV με MI ranking).
+- images: paths των PNG (heatmap, top-|corr|, fraud-by-hour).
+- out_dataset: το εμπλουτισμένο CSV (interim) με τα νέα features.
+- nan_ratio_top10_csv: CSV με top-10 στήλες ως προς ποσοστό NaNs (γρήγορο data-quality report).
+- run_meta: metadata εκτέλεσης (runner, έκδοση Python/OS, args, timestamps).
+- duration_sec: πόσο διήρκησε το run (για CI/monitoring).
+
+1) reports/week8_corr_summary/week8_corr_with_target.csv
+Ταξινομείς κατά abs(corr) για να δεις ιεράρχηση (ισχυρότερα σχετικά features).
+2) reports/week8_corr_summary/week8_mutual_info_topN.csv (αν ενεργό MI)
+Τι σημαίνει: MI ≥ 0, μεγαλύτερη τιμή ⇒ ισχυρότερη μη-γραμμική εξάρτηση. Δεν έχει πρόσημο.
+Χρήση: Συμπληρώνει τη συσχέτιση (corr) όταν περιμένεις μη γραμμικές σχέσεις ή thresholds. Κάνεις ranking για επιλογή features / προτεραιοποίηση δοκιμών.
+3) reports/week8_corr_summary/week8_nan_ratio_top10.csv
+Χρήση: Data-quality snapshot. Αν όλες ≈ 0, επιβεβαιώνεις ότι το dataset είναι πλήρες. Αν όχι, αποφασίζεις imputation / cleaning.
+
