@@ -1,320 +1,231 @@
-# 💳 Credit Card Fraud Detection  
-**Business-Oriented Machine Learning Project**
+# 💳 Credit Card Fraud Detection (Business-Oriented ML)
 
-![Python](https://img.shields.io/badge/python-3.13-blue)  
-![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+![Python](https://img.shields.io/badge/python-3.13-blue)
+![ML](https://img.shields.io/badge/ml-sklearn%20%7C%20xgboost-brightgreen)
+![Status](https://img.shields.io/badge/status-active-yellow)
 
----
+A production-inspired **credit card fraud detection** project built with a **business-first evaluation mindset**:
+metrics → decisions → operational impact.
 
-## 🧭 Executive Summary
-
-This repository contains a **production-inspired credit card fraud detection system** built as part of a **final-year BSc Computer Science thesis**.
-
-The project is designed with a **business lens**:
-
-- Reduce **financial losses from fraudulent transactions**
-- Protect **customer trust and brand reputation**
-- Provide **actionable, explainable insights** to fraud analysts and risk teams
-- Demonstrate a **reproducible ML pipeline** suitable for real-world deployment (API + dashboard)
-
-The focus is not only on building models, but on **understanding the business trade-offs** between:
-- Catching as many fraudulent transactions as possible (**recall / sensitivity**)
-- Keeping false alarms at a manageable level (**precision**, customer experience, operational cost)
+This repo is designed like a “risk / fraud analytics” deliverable: not just models, but **threshold policies**, **cost trade-offs**, and **auditable artifacts**.
 
 ---
 
-## 🏦 Business Problem & Objectives
+## 🧠 Business framing (why this matters)
 
-Credit card fraud, even at low percentage levels, can generate **disproportionately high financial impact** due to chargebacks, investigation costs and customer churn.
+Fraud detection is a rare-event classification problem where **accuracy is misleading**.
+What matters is the trade-off between:
 
-### Core Business Question
+- **Recall (Fraud)** → how many frauds we stop (reduce fraud leakage)
+- **Precision (Fraud)** → how many legitimate customers we disturb / how much analyst workload we generate (false alarms)
 
-> *Can we detect fraudulent transactions early and accurately enough to support a bank’s fraud detection team, while keeping false positives at an operationally acceptable level?*
-
-### Business Objectives
-
-1. **Early Detection**  
-   Build models that can flag suspicious transactions in (near) real-time.
-
-2. **High Recall on Fraud Cases (Class = 1)**  
-   Minimize **false negatives** – fraudulent transactions that pass undetected.
-
-3. **Controlled False Positives**  
-   Avoid overwhelming analysts and irritating customers with unnecessary alerts.
-
-4. **Explainability & Trust**  
-   Provide interpretable outputs (feature importance, example rules, SHAP-style explanations) so that **risk teams can trust and audit** the model.
-
-5. **Reproducibility & Extensibility**  
-   Organize the project so it can be:
-   - Extended by another data scientist
-   - Integrated into a **REST API** and a **web interface**
-   - Used as a blueprint in a corporate environment
+This project treats the classification threshold as an **operational policy**, not as “0.5 by default”.
 
 ---
 
 ## 📊 Dataset
 
-- **Source:** [Kaggle – Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)  
-- **Transactions:** 284,807  
-- **Fraud cases:** 492  
-- **Fraud rate:** ~0.17% (highly imbalanced)
+- Kaggle Credit Card Fraud Detection (MLG-ULB style dataset)
+- 284,807 transactions
+- 492 frauds (~0.17% fraud rate)
+- Features: `V1..V28` (PCA), `Time`, `Amount`
+- Target: `Class` (0 = legitimate, 1 = fraud)
 
-The dataset is **anonymized** and includes:
-- PCA-transformed features: `V1`–`V28`
-- `Amount` and `Time`
-- `Class` (0 = legitimate, 1 = fraud)
-
-> 🔐 The raw dataset is stored locally in `data/data_raw/` and is **excluded from Git** for good practice around data handling.
+> The raw dataset is kept locally under `data/data_raw/` and is **not committed** to Git.
 
 ---
 
-## 🛠️ Technology Stack
+## ✅ Current Snapshot (Month 3: Modeling + Business Selection)
 
-**Core Language & Environment**
-- Python 3.13.0
-- Virtual environment (`.venv`) and `requirements.txt` for reproducibility
+Evaluation uses:
+- **Locked train/val/test splits** (stratified)
+- **Threshold selected on validation** and applied to test
+- Metrics: Precision/Recall/F1 + ROC-AUC + **PR-AUC**
+- Cost-based policy example: `cost_fp=1`, `cost_fn=20` (fraud miss is 20× worse than a false alarm)
 
-**Data & Analysis**
-- `NumPy`, `Pandas` – data manipulation and numerical computing  
-- `Matplotlib`, `Seaborn` – visualizations & dashboards (EDA, model performance)  
-- `Jupyter Notebooks` – experimentation and exploratory analysis  
+### Shortlist (business-ready): Random Forest vs XGBoost (locked test)
 
-**Machine Learning**
-- `scikit-learn` – models, metrics, cross-validation  
-  - Logistic Regression (baseline)
-  - Decision Trees
-  - Random Forest
-  - Gradient Boosting (e.g. XGBoost / similar, where applicable)
-- Planned: model explainability with **SHAP / LIME-style** techniques
+| Model | Threshold policy | Threshold | Precision (Fraud) | Recall (Fraud) | F1 | ROC-AUC | PR-AUC | TP | FP | FN |
+|------|-------------------|----------:|------------------:|---------------:|----:|--------:|-------:|---:|---:|---:|
+| Random Forest | cost-optimal (val-selected) | 0.2354 | 0.7549 | 0.8105 | 0.7817 | 0.9719 | 0.8061 | 77 | 25 | 18 |
+| XGBoost | cost-optimal (val-selected) | 0.0884 | 0.7938 | 0.8105 | 0.8021 | 0.9699 | 0.8171 | 77 | 20 | 18 |
 
-**Integration & Deployment (Planned)**
-- REST API with **FastAPI** or **Flask**
-- Simple **web UI** (e.g. Streamlit / Flask templates)
-- Containerization with **Docker**
-- Optional cloud deployment (e.g. AWS / Azure / Heroku)
+**Business interpretation:**
+- Both models stop the same number of frauds (TP=77) and miss the same (FN=18),
+- XGBoost produces fewer false alarms (FP=20 vs 25) → **lower operational cost + lower customer friction**.
 
----
+### Why “Recall-first” can break operations (example)
 
-## 🔬 Methodology (From Data to Business Value)
+A recall-target policy on RF (threshold ≈ 0.0198) achieved:
+- TP=82, FN=13 (slightly better fraud capture)
+- but **FP=1795** → massive analyst workload + customer friction
 
-### 1. Data Preprocessing & Quality
-
-- Check for **missing or invalid values**
-- Scale `Amount` and potentially `Time`
-- Train–test split with **class imbalance in mind**
-- Optionally create **time-based splits** to mimic real-world streaming data
-
-### 2. Handling Class Imbalance
-
-Because fraud is rare, classical accuracy is misleading. Strategies include:
-
-- Baseline: **no resampling** (to understand the raw difficulty)
-- **SMOTE** (Synthetic Minority Oversampling Technique)
-- **Random undersampling** of the majority class
-- Optionally compare with **class-weighted models**
-
-> Business angle: different resampling strategies simulate different **operational policies** (e.g. “more aggressive” vs “more conservative” fraud detection).
-
-### 3. Model Training
-
-Initial and planned models:
-
-- **Logistic Regression**  
-  - Baseline model, interpretable coefficients  
-  - Good benchmark for more complex models
-
-- **Decision Tree Classifier**  
-  - Non-linear, rule-based model  
-  - Easy to interpret and explain to non-technical stakeholders
-
-- **Random Forest / Gradient Boosting**  
-  - Ensemble techniques for higher performance  
-  - Often used in production fraud systems  
-  - Trade-off: harder to interpret vs. better metrics
-
-- (Optional, advanced) **Neural Networks** for comparison on structured/tabular data.
-
-### 4. Model Evaluation & Business Metrics
-
-Standard ML metrics:
-- Accuracy, Precision, Recall, F1-score
-- ROC-AUC, PR-AUC
-- Confusion Matrix
-
-Business-oriented focus:
-- **Recall on Class = 1** (How many fraudulent cases do we catch?)
-- **Precision on Class = 1** (How many of our alerts are truly fraud?)
-- **False Positive Rate** (How many legitimate customers are disturbed?)
-- Threshold analysis: find operating points that match **business risk appetite**.
-
-> The final report will discuss **scenarios**, such as:
-> - “High-security mode” → higher recall, lower precision  
-> - “Customer-friendly mode” → fewer false positives, slightly lower recall  
+This is why the system is framed around **policy thresholds**, not only “maximize recall”.
 
 ---
 
-## 📈 Results & Insights (Work in Progress)
+## 🧰 Tech Stack
 
-This section is updated as experiments progress.
+- Python 3.13
+- pandas, numpy, scipy
+- scikit-learn (LogReg, DT, RF)
+- xgboost
+- matplotlib
 
-Planned deliverables:
-- Comparative performance table: **Logistic Regression vs Decision Tree vs Ensembles**
-- ROC / PR curves saved under `reports/figures/`
-- Example **decision paths / rules** from the tree model
-- Business interpretation:
-  - Which features contribute most to fraud detection?
-  - How would changing the decision threshold affect:
-    - Number of flagged transactions per day
-    - Estimated avoided fraud
-    - Number of extra customer verifications
+Artifacts saved per run:
+- `metrics.json`
+- `threshold_sweep*.csv`
+- `classification_report*.txt`
+- plots: ROC, PR, cost-vs-threshold, confusion matrices
 
 ---
 
-## 📂 Project Structure (high-level)
+## ⚡ Reproducible runs (Quickstart)
+
+### 1) Setup
+```bash
+python -m venv .venv
+source .venv/Scripts/activate   # Windows Git Bash
+pip install -r requirements.txt
+```
+
+### 2) Put dataset locally
+```bash
+data/data_raw/creditcard.csv
+```
+
+### 3) Create stratified splits (train/val/test)
+```bash
+python src/08_2_make_splits.py \
+  --data data/data_raw/creditcard.csv \
+  --outdir data/data_interim \
+  --target Class \
+  --test-size 0.20 \
+  --val-size 0.10 \
+  --seed 42 \
+  --drop-duplicates
+```
+
+### 4) Train + evaluate models (examples)
+
+**Logistic Regression (baseline + threshold policy):**
+```bash
+python src/09_1_logreg_from_splits.py \
+  --train-csv data/data_interim/splits_week8/train.csv \
+  --val-csv   data/data_interim/splits_week8/val.csv \
+  --test-csv  data/data_interim/splits_week8/test.csv \
+  --target Class \
+  --outdir reports/week9_logreg_week8 \
+  --figdir reports/figures/week9_logreg_week8 \
+  --model-path models/logreg_week8.joblib \
+  --scaler standard \
+  --class-weight balanced \
+  --threshold 0.50 \
+  --optimize cost \
+  --n-thresholds 101 \
+  --cost-fp 1 \
+  --cost-fn 20
+```
+
+**Decision Tree:**
+```bash
+python src/10_decision_tree.py \
+  --input-train data/data_interim/splits_week8/train.csv \
+  --input-test  data/data_interim/splits_week8/val.csv \
+  --target-column Class \
+  --outdir reports/week10_dt_week8_val \
+  --figdir reports/figures/week10_dt_week8_val \
+  --model-path models/dt_week8.joblib \
+  --max-depth 12 \
+  --class-weight balanced \
+  --threshold 0.50 \
+  --optimize cost \
+  --n-thresholds 101 \
+  --cost-fp 1 \
+  --cost-fn 20
+```
+
+**Random Forest:**
+```bash
+python src/11_random_forest.py \
+  --input-train data/data_interim/splits_week8/train.csv \
+  --input-test  data/data_interim/splits_week8/val.csv \
+  --target-column Class \
+  --outdir reports/week11_rf_week8_val \
+  --figdir reports/figures/week11_rf_week8_val \
+  --model-path models/rf_week8.joblib \
+  --n-estimators 300 --max-depth 12 --min-samples-leaf 3 \
+  --class-weight balanced \
+  --threshold 0.50 \
+  --optimize cost \
+  --n-thresholds 101 \
+  --cost-fp 1 \
+  --cost-fn 20
+```
+
+**XGBoost (Week 12):**
+```bash
+python src/12_xgboost.py \
+  --input-train data/data_interim/splits_week8/train.csv \
+  --input-test  data/data_interim/splits_week8/val.csv \
+  --target-column Class \
+  --outdir reports/week12_xgb_week8_val \
+  --figdir reports/figures/week12_xgb_week8_val \
+  --model-path models/xgb_week8.joblib \
+  --n-estimators 400 --max-depth 6 --learning-rate 0.05 \
+  --subsample 0.8 --colsample-bytree 0.8 \
+  --scale-pos-weight auto \
+  --threshold 0.50 \
+  --optimize cost \
+  --n-thresholds 101 \
+  --cost-fp 1 \
+  --cost-fn 20
+```
+
+---
+
+## 📁 Repository structure (report-friendly)
 
 ```bash
-cc-fraud-detection/
-├── certificates/      # Certifications & badges related to the project
-├── data/              # Datasets (raw & processed) - raw data not tracked in git
-├── models/            # Saved trained models (*.joblib)
-├── notebooks/         # Jupyter notebooks for research & experimentation
-├── reports/           # Thesis-oriented reports & documentation
-│   └── figures/       # Plots & diagrams (organized per week: week2/, …, week10/)
-├── src/               # Production-like Python scripts (ML pipeline)
-├── .gitignore         # Git ignore rules (data_raw, .venv, models, etc.)
-├── README.md          # Project overview (you are here)
-└── requirements.txt   # Python dependencies
-
+reports/
+├── month1/                 # intro + dataset overview + early notes
+├── month2/                 # EDA + data quality + scaling + imbalance + features
+├── month3/                 # modeling + scorecard + business selection (Weeks 9–12)
+├── figures/                # report figures (ROC/PR/CM/threshold policy plots)
+├── report_snippets/        # report-ready text/snippets (copy–paste)
+└── README.md               # explains the reports structure
 ```
----
-
-## 📁 Project Folders & Roles
-
-- **`notebooks/` → Research & experimentation**  
-  Jupyter Notebooks που χρησιμοποιούνται για:
-  - Πειραματισμό με διαφορετικά μοντέλα και hyperparameters  
-  - EDA (Exploratory Data Analysis) και οπτικοποιήσεις  
-  - Γρήγορο δοκιμαστικό κώδικα πριν μπει σε παραγωγική μορφή στο `src/`  
-
-- **`src/` → Production-like code (reusable functions, scripts)**  
-  Περιέχει πιο “καθαρό” και επαναχρησιμοποιήσιμο κώδικα:
-  - Σενάρια φόρτωσης δεδομένων, preprocessing και training  
-  - Ορισμοί pipelines και βοηθητικών συναρτήσεων  
-  - Κώδικα που μπορεί να χρησιμοποιηθεί αργότερα σε API ή σε deployment  
-
-- **`reports/` → Material that connects directly to the thesis chapters**  
-  Ο φάκελος που “κουμπώνει” με την πτυχιακή:
-  - Markdown αρχεία ανά εβδομάδα / ενότητα (EDA, Modeling, Evaluation κ.λπ.)  
-  - Περιγραφές πειραμάτων, συμπεράσματα, business ερμηνείες  
-  - Αναφορές σε figures και πίνακες που αποθηκεύονται στο `reports/figures/`  
 
 ---
 
-## 📌 Project Management & Workflow
+## 🧾 Thesis / Report integration
 
-The project is managed using a **Kanban-style workflow** to reflect a real team environment.
+Week 12 is the “business decision” week:
+- unified scorecard
+- conscious elimination of weaker approaches
+- shortlist (RF vs XGB)
+- threshold tuning as risk policy
+- confusion matrix translated to operational impact
+- final selection narrative for the report
 
-- **Trello Board (Kanban):**  
-  Columns: `To Do` / `In Progress` / `Done`
-
-Each card corresponds to concrete tasks such as:
-
-- **EDA & Data Understanding**  
-  - Explore distributions, correlations, data quality  
-  - Identify issues relevant to fraud detection
-
-- **Model baselines & tuning**  
-  - Train and compare baseline models (e.g. Logistic Regression, Decision Trees)  
-  - Perform basic hyperparameter tuning
-
-- **Metrics & business interpretation**  
-  - Evaluate models with fraud-relevant metrics (recall, precision, ROC/PR curves)  
-  - Translate results into **business impact** (false positives, missed fraud, workload on analysts)
-
-- **Documentation & thesis sections**  
-  - Update markdown reports in `reports/`  
-  - Align code experiments with thesis chapters
-
-- **Deployment & explainability**  
-  - Prepare models for serving (API)  
-  - Add interpretability artifacts (feature importance, explanations)
-
-This structure makes the project **transparent**, **trackable**, and closer to **industry practices**.
+Report-ready text lives under:
+- `reports/month3/12_week12_business_model_selection.md`
+- `reports/month3/month3_milestone_weeks9-12.md`
+- `reports/report_snippets/`
 
 ---
 
-## 🚀 Deployment Roadmap (Planned)
+## 🚀 Roadmap (Month 4)
 
-### 1. Model Packaging
-
-- Persist the **best-performing model** (e.g., `joblib` or `pickle`)  
-- Store **preprocessing steps** (scalers, encoders) together with the model  
-- Ensure reproducibility of the full inference pipeline
-
-### 2. REST API
-
-Expose the model through a simple REST API, e.g. with **FastAPI** or **Flask**:
-
-- Endpoint: `POST /predict`  
-  - Input: transaction features (JSON payload)  
-  - Output:
-    - Fraud probability (e.g., score between 0 and 1)  
-    - Recommended action: **flag / review / approve**
-
-This mirrors how banks integrate ML models into existing systems (core banking, fraud-monitoring tools, dashboards).
-
-### 3. Web Interface / Dashboard
-
-Build a lightweight **web UI** for business users and analysts:
-
-- Manual transaction scoring (paste or upload data)  
-- View:
-  - Distributions and trends in alerts  
-  - Model performance snapshots (precision–recall, confusion matrix)  
-- Implementation options:
-  - **Streamlit** for fast prototyping  
-  - Or **Flask + HTML templates** for more control
-
-### 4. Containers & Cloud
-
-- Create a **Dockerfile** to containerize:
-  - Model  
-  - API  
-  - Any preprocessing logic  
-- Optional cloud deployment to platforms such as:
-  - **AWS** (e.g. ECS, Fargate, EC2)  
-  - **Azure** (App Service, Container Apps)  
-  - **Heroku** or similar for demo purposes  
-
-This shows how the solution can be **scaled and integrated** in a real-world environment.
-
----
-
-## 🎓 Certifications & Skills Acquired
-
-To align the project with **industry expectations**, a series of certifications and courses are being completed in parallel:
-
-| Certification / Course                                      | Provider                                  | Month Completed | Linked Report Section        |
-|-------------------------------------------------------------|-------------------------------------------|-----------------|------------------------------|
-| Supervised Machine Learning: Regression & Classification    | Coursera (Stanford / DeepLearning.AI)     | Month 1         | Intro & Background           |
-| Data Science with Python                                   | Great Learning Academy                    | Month 1         | Intro & Background           |
-| Python, Pandas, Data Visualization (Micro-courses)         | Kaggle Learn                              | Month 1–2       | Data & Methodology           |
-| Machine Learning with Python (IBM Digital Badge)           | IBM Cognitive Class                       | Month 2         | Data & Methodology           |
-| Intermediate Machine Learning                              | Kaggle Learn                              | Month 3         | Experiments & Modeling       |
-| Feature Engineering                                        | Kaggle Learn                              | Month 3         | Experiments & Modeling       |
-| ML Explainability (SHAP, LIME)                             | Kaggle Learn                              | Month 3–4       | Results & Explainability     |
-| Docker Essentials                                          | IBM                                       | Month 5         | Deployment                   |
-| AWS Cloud Practitioner Essentials                          | AWS Training                              | Month 5         | Deployment                   |
-| Google Cloud Skill Badges (ML on GCP, Responsible AI)      | Google Cloud                              | Month 5         | Deployment                   |
-| Deploy Web App with Containers                             | Microsoft Learn                           | Month 5         | Deployment                   |
-
-These certifications are referenced in the written thesis as **evidence of structured learning and professional development**, and show a clear path from **core ML skills** to **MLOps and cloud deployment**.
+- Interpretability (feature importance + SHAP-style explanations)
+- Deployment-ready pipeline (preprocessing + model bundle)
+- REST API endpoint + lightweight dashboard
+- Optional Docker packaging
 
 ---
 
 ## 👤 Author
 
 **Lazaros Voulistiotis**  
-🎓 BSc Computer Science (Final Year)  
-🚀 Aspiring Machine Learning Engineer
+BSc Computer Science (Final Year) — Thesis Project  
+Aspiring Machine Learning Engineer
