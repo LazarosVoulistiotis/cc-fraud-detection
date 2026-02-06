@@ -1,0 +1,84 @@
+{
+  "model": "LogisticRegression(locked_splits)",
+  "splits": {
+    "train_csv": "data/data_interim/splits_week8/train.csv",
+    "val_csv": "data/data_interim/splits_week8/val.csv",
+    "test_csv": "data/data_interim/splits_week8/test.csv",
+    "target": "Class"
+  },
+  "config": {
+    "scaler": "standard",
+    "class_weight": "balanced",
+    "threshold_default": 0.5,
+    "optimize": "cost",
+    "n_thresholds": 101,
+    "cost_fp": 1.0,
+    "cost_fn": 20.0
+  },
+  "threshold_selected_on_val": 0.99,
+  "test_eval_default": {
+    "threshold": 0.5,
+    "precision": 0.05410691003911343,
+    "recall": 0.8736842105263158,
+    "f1": 0.10190300798035605,
+    "roc_auc": 0.9671040321674073,
+    "pr_auc": 0.6844661554297616,
+    "confusion": {
+      "tn": 55200,
+      "fp": 1451,
+      "fn": 12,
+      "tp": 83,
+      "tpr": 0.8736842105263158,
+      "fpr": 0.025612963584049707,
+      "tnr": 0.9743870364159503,
+      "fnr": 0.12631578947368416,
+      "bal_acc": 0.9240356234711331
+    },
+    "classification_report": "              precision    recall  f1-score   support\n\n           0     0.9998    0.9744    0.9869     56651\n           1     0.0541    0.8737    0.1019        95\n\n    accuracy                         0.9742     56746\n   macro avg     0.5269    0.9240    0.5444     56746\nweighted avg     0.9982    0.9742    0.9854     56746\n"
+  },
+  "test_eval_business": {
+    "threshold": 0.99,
+    "precision": 0.646551724137931,
+    "recall": 0.7894736842105263,
+    "f1": 0.7109004739336493,
+    "roc_auc": 0.9671040321674073,
+    "pr_auc": 0.6844661554297616,
+    "confusion": {
+      "tn": 56610,
+      "fp": 41,
+      "fn": 20,
+      "tp": 75,
+      "tpr": 0.7894736842105263,
+      "fpr": 0.0007237295016857602,
+      "tnr": 0.9992762704983142,
+      "fnr": 0.21052631578947367,
+      "bal_acc": 0.8943749773544203
+    },
+    "classification_report": "              precision    recall  f1-score   support\n\n           0     0.9996    0.9993    0.9995     56651\n           1     0.6466    0.7895    0.7109        95\n\n    accuracy                         0.9989     56746\n   macro avg     0.8231    0.8944    0.8552     56746\nweighted avg     0.9991    0.9989    0.9990     56746\n"
+  },
+  "artifacts": {
+    "model_path": "models\\logreg_week8.joblib",
+    "metrics_json": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_logreg_week8\\metrics.json",
+    "threshold_sweep_val_csv": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_logreg_week8\\threshold_sweep_val.csv",
+    "threshold_sweep_test_csv": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_logreg_week8\\threshold_sweep_test.csv",
+    "cr_default": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_logreg_week8\\classification_report_default.txt",
+    "cr_business": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_logreg_week8\\classification_report_business.txt",
+    "fig_roc": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9_logreg_week8\\roc.png",
+    "fig_pr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9_logreg_week8\\pr.png",
+    "fig_cm_default": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9_logreg_week8\\cm_default.png",
+    "fig_cm_business": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week9_logreg_week8\\cm_business.png",
+    "log_file": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week9_logreg_week8\\run_20260205-203038.log"
+  },
+  "run": {
+    "run_id": "20260205-203038",
+    "git_rev": "b198782",
+    "env": {
+      "python": "3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)]",
+      "os": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.3.2",
+      "pandas": "2.3.1",
+      "scikit_learn": "1.7.2"
+    },
+    "timestamp_utc": "2026-02-05T18:30:47Z"
+  }
+}

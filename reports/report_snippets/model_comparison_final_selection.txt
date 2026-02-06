@@ -1,0 +1,22 @@
+Model Comparison & Final Selection
+
+Η παρούσα ενότητα αξιολογεί και συγκρίνει εναλλακτικά μοντέλα ανίχνευσης απάτης με στόχο όχι μόνο την τεχνική επίδοση αλλά και την επιχειρησιακή αξία. Σε περιβάλλον ακραίας ανισορροπίας κλάσεων (fraud ≪ non-fraud), η “υψηλή ακρίβεια” (accuracy) μπορεί να είναι παραπλανητική. Για τον λόγο αυτό δίνεται έμφαση σε μετρικές που αντανακλούν καλύτερα το fraud detection πρόβλημα, όπως Precision/Recall (fraud class), F1, καθώς και PR-AUC (Average Precision), το οποίο είναι ιδιαίτερα κατάλληλο όταν τα θετικά δείγματα είναι σπάνια. Τα αποτελέσματα συνοψίζονται στο ενιαίο scorecard (βλ. Πίνακας [#]).
+
+Evaluation Protocol (Fair Comparison)
+Για να διασφαλιστεί δίκαιη σύγκριση (“common ground”), όλα τα μοντέλα αξιολογήθηκαν στα ίδια δεδομένα split (train/validation/test) με σταθερό seed και stratification, ενώ ο ορισμός του decision threshold αντιμετωπίστηκε ως επιχειρησιακή πολιτική και όχι ως προεπιλογή 0.5. Συγκεκριμένα, το threshold κάθε υποψήφιου μοντέλου επιλέχθηκε στο validation set με cost-based κριτήριο και στη συνέχεια εφαρμόστηκε χωρίς περαιτέρω ρύθμιση στο locked test set. Η πρακτική αυτή προσομοιώνει πραγματικό production workflow όπου το test set λειτουργεί ως “τελικός έλεγχος” και όχι ως πεδίο βελτιστοποίησης.
+
+Baseline & Candidate Models
+Η διαδικασία μοντελοποίησης ξεκίνησε με Logistic Regression ως baseline λόγω απλότητας και ερμηνευσιμότητας, συνεχίστηκε με Decision Tree για μη-γραμμικά patterns και επεκτάθηκε σε ensemble models (Random Forest και XGBoost) που είναι ιδιαίτερα αποτελεσματικά σε tabular δεδομένα. Παρότι η Logistic Regression μπορεί να επιτύχει υψηλό recall με πολύ χαμηλό threshold, αυτό οδηγεί σε μεγάλο αριθμό false alarms. Στο test set παρατηρήθηκε ότι με default threshold το precision είναι πολύ χαμηλό παρά το υψηλό recall, ενώ με business threshold το precision βελτιώνεται σημαντικά με αποδεκτό recall, επιβεβαιώνοντας ότι το threshold αποτελεί policy εργαλείο.
+
+Το Decision Tree προσφέρει απλότητα και ερμηνευσιμότητα αλλά εμφανίζει μειωμένη σταθερότητα και απόδοση στο locked test set σε σχέση με τα ensemble μοντέλα. Η συμπεριφορά αυτή είναι αναμενόμενη σε προβλήματα υψηλής πολυπλοκότητας όπου οι μεμονωμένοι δένδροι είναι πιο ευάλωτοι σε overfitting και variance.
+
+Business-Oriented Thresholding & Trade-offs
+Στον επιχειρησιακό σχεδιασμό, το threshold καθορίζει την ισορροπία μεταξύ: (i) True Positives (TP), δηλαδή απάτες που αποτράπηκαν, (ii) False Negatives (FN), δηλαδή απάτες που διέφυγαν (fraud leakage), και (iii) False Positives (FP), δηλαδή “false alarms” που αυξάνουν το κόστος λειτουργίας (manual review) και τη τριβή πελάτη. Για να συνδεθεί η απόφαση με επιχειρηματικό ρίσκο, χρησιμοποιήθηκε cost-based πολιτική με κόστος FN σημαντικά υψηλότερο από FP (π.χ. cost_fp=1, cost_fn=20). Επιπλέον, εξετάστηκε “fraud-first” πολιτική ως stress test: αν και μπορεί να μειώσει FN, συχνά προκαλεί δραματική αύξηση FP, καθιστώντας την επιχειρησιακά μη βιώσιμη λόγω υπερφόρτωσης του review pipeline. Το αποτέλεσμα αυτό δείχνει ότι η βελτιστοποίηση μόνο για recall δεν είναι επαρκής· απαιτείται πολιτική που σέβεται capacity constraints και customer experience.
+
+Shortlist & Final Model Selection
+Με βάση τα αποτελέσματα, η shortlist περιορίστηκε σε Random Forest και XGBoost, καθώς αυτά τα μοντέλα παρέχουν υψηλό recall με επιχειρησιακά αποδεκτό precision και υποστηρίζουν cost-sensitive ρυθμίσεις (class weighting / scale_pos_weight και threshold policy). Στο locked test set, με thresholds που επιλέχθηκαν στο validation set, τα δύο μοντέλα παρουσίασαν παρόμοια ικανότητα fraud prevention (ίδια TP/FN υπό cost-policy). Ωστόσο, το XGBoost εμφάνισε χαμηλότερα false alarms (FP) για την ίδια προστασία έναντι fraud leakage, γεγονός που μεταφράζεται σε μικρότερο operational κόστος και λιγότερη τριβή πελάτη.
+
+Συνεπώς, η τελική επιλογή βασίστηκε σε (i) υψηλό recall, (ii) αποδεκτό precision υπό ρεαλιστική policy, (iii) σταθερή συμπεριφορά στο locked test set και (iv) production-friendly μηχανισμό χειρισμού ανισορροπίας και thresholding. Τα σχετικά confusion matrices και οι καμπύλες Precision–Recall παρουσιάζονται στα Σχήματα [#]–[#], ενώ η συνολική σύγκριση περιλαμβάνεται στο Πίνακας [#].
+
+Τελική Απόφαση (thesis-ready):
+«Το XGBoost επιλέγεται ως τελικό μοντέλο, καθώς προσφέρει τον καλύτερο συμβιβασμό μεταξύ υψηλού recall και επιχειρησιακά αποδεκτού precision, ενώ υποστηρίζει cost-sensitive learning μέσω class weighting και threshold policy, και μπορεί να επεκταθεί εύκολα σε παραγωγικό περιβάλλον.»

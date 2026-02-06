@@ -1,0 +1,73 @@
+{
+  "model": "DecisionTree(baseline)",
+  "parameters": {
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced",
+    "criterion": "gini",
+    "max_depth": 12,
+    "max_features": null,
+    "max_leaf_nodes": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "random_state": 42,
+    "splitter": "best"
+  },
+  "test_size_note": "external provided split (train/test csv)",
+  "threshold_default": 0.5,
+  "metrics": {
+    "accuracy": 0.9976386000775385,
+    "precision": 0.40384615384615385,
+    "recall": 0.8936170212765957,
+    "f1": 0.5562913907284768,
+    "roc_auc": 0.9464100345370992,
+    "pr_auc": 0.6474465067833912,
+    "recall_at_precision_0.90": 0.0,
+    "precision_at_recall_0.90": 0.0016565044232192576
+  },
+  "optimize": "cost",
+  "best_threshold": 0.99,
+  "best_threshold_metrics": {
+    "threshold": 0.99,
+    "precision": 0.6212121212121212,
+    "recall": 0.8723404255319149,
+    "f1": 0.7256637168141593,
+    "specificity": 0.9991174186259973,
+    "balanced_accuracy": 0.9357289220789562,
+    "tp": 41,
+    "fp": 25,
+    "tn": 28301,
+    "fn": 6,
+    "cost_per_tx": 0.005110492369506221
+  },
+  "cost_fp": 1.0,
+  "cost_fn": 20.0,
+  "artifacts": {
+    "model_path": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\models\\dt_week8.joblib",
+    "metrics_json": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week10_dt_week8_val\\metrics.json",
+    "classification_report": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week10_dt_week8_val\\classification_report.txt",
+    "feature_importances_csv": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week10_dt_week8_val\\feature_importances.csv",
+    "sweep_csv": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week10_dt_week8_val\\threshold_sweep.csv",
+    "fig_roc": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week10_dt_week8_val\\week10_dt_roc.png",
+    "fig_pr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week10_dt_week8_val\\week10_dt_pr.png",
+    "fig_conf_default": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week10_dt_week8_val\\week10_dt_confusion_default.png",
+    "fig_conf_best": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week10_dt_week8_val\\week10_dt_confusion_best.png",
+    "fig_prec_rec_vs_thr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week10_dt_week8_val\\week10_dt_prec_recall_vs_threshold.png",
+    "fig_cost_vs_thr": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\figures\\week10_dt_week8_val\\week10_dt_cost_vs_threshold.png",
+    "log_file": "C:\\Users\\ΛΑΖΑΡΟΣ\\Documents\\Projects\\cc-fraud-detection\\reports\\week10_dt_week8_val\\run_20260205-203924.log"
+  },
+  "run": {
+    "run_id": "20260205-203924",
+    "git_rev": "b198782",
+    "env": {
+      "python": "3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)]",
+      "os": "Windows-11-10.0.26200-SP0",
+      "numpy": "2.3.2",
+      "pandas": "2.3.1",
+      "scikit_learn": "1.7.2"
+    },
+    "timestamp_utc": "2026-02-05T18:39:37Z"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "input_train": "data/data_interim/splits_week8/train.csv",
+  "input_test": "data/data_interim/splits_week8/test.csv",
+  "target_column": "Class",
+  "n_estimators": 300,
+  "max_depth": 12,
+  "min_samples_split": 2,
+  "min_samples_leaf": 3,
+  "max_features": "sqrt",
+  "bootstrap": true,
+  "n_jobs": -1,
+  "class_weight": "balanced",
+  "pos_weight": 10.0,
+  "random_state": 42,
+  "outdir": "reports/week11_rf_week8_test",
+  "figdir": "reports/figures/week11_rf_week8_test",
+  "model_path": "models/rf_week8.joblib",
+  "threshold": 0.2354,
+  "optimize": "none",
+  "n_thresholds": 101,
+  "cost_fp": 1.0,
+  "cost_fn": 20.0
+}
