@@ -42,7 +42,7 @@ The project follows a six‑month roadmap designed to build an industry‑ready 
 - Threshold & policy tuning: For each model, sweep thresholds and optimise a cost‑based objective (e.g. `cost_fp=1`, `cost_fn=20`). Select thresholds on the validation set and apply to the test set.
 - Shortlist & business decision: Compare models based on precision, recall, F1, ROC‑AUC and PR‑AUC. The shortlist currently favours XGBoost over Random Forest because it achieves similar recall but fewer false positives (see current snapshot below). Document this decision and its business interpretation.
 
-### Month 4 – Refinement & Explainability (in progress)
+### Month 4 – Refinement & Explainability (in progress — Week 15 SHAP completed)
 
 - Hyper‑parameter tuning: Systematically tune the best models (e.g. number of trees, depth, learning rate) using grid/random search on relevant metrics.
 - Feature engineering: Revisit EDA findings to add or transform features where possible. Explore feature selection and possibly train an autoencoder for anomaly detection.
@@ -64,7 +64,7 @@ The project follows a six‑month roadmap designed to build an industry‑ready 
 - Presentation preparation: Create slides and a demo to showcase the business problem, modelling approach, results and the working API.
 - Future work: Outline possible enhancements such as streaming simulations, ensemble stacking, model monitoring and advanced fraud techniques.
 
-## ✅ Current Snapshot (Month 3)
+## ✅ Current Snapshot (Month 4)
 
 The table below summarises the performance of our two leading models on the locked test set using cost‑optimised thresholds. Both were trained on stratified splits with class weighting and evaluated on precision, recall, F1, ROC‑AUC and PR‑AUC.
 
@@ -75,11 +75,40 @@ The table below summarises the performance of our two leading models on the lock
 
 **Business interpretation:** Both models capture the same number of frauds (77) and miss 18, but XGBoost produces fewer false alarms, reducing analyst workload and customer friction. A recall‑target policy can achieve slightly higher recall but results in thousands of false positives, which is operationally unacceptable. Thus, we select XGBoost as the current champion model.
 
+---
+
+## 🔍 Explainability (Week 15 — SHAP)
+
+To make the champion model auditable and “responsible”, Week 15 applies **SHAP TreeExplainer** to the final XGBoost model and produces both **global** and **local** explanations.
+
+**Where to find the outputs**
+- Weekly write‑up: `reports/15_week15_shap_explainability.md`
+- Report snippet (copy‑paste): `reports/report_snippets/week15_shap.md`
+- Figures: `reports/figures/week15/`
+- Metadata: `reports/week15_shap/`
+
+**Key SHAP deliverables**
+- Global: beeswarm summary + mean(|SHAP|) bar
+- Dependence plots: top‑2 drivers (this run: V4 and V14)
+- Local case studies: True Positive, True Negative, Borderline near threshold **0.0884**
+
+<details>
+<summary><b>Visual preview (click to expand)</b></summary>
+
+**Global summary (beeswarm)**  
+![SHAP Summary (Beeswarm)](reports/figures/week15/shap_summary_beeswarm.png)
+
+**Global importance (mean |SHAP| bar)**  
+![Mean |SHAP| Bar](reports/figures/week15/shap_mean_abs_bar.png)
+
+</details>
+
+
 ## 🧰 Technology Stack
 
 - **Programming language:** Python 3.13
 - **Data analysis & modelling:** pandas, numpy, scikit‑learn (LogReg, Decision Tree, Random Forest), XGBoost
-- **Visualisation:** matplotlib (ROC/PR curves, confusion matrices, threshold sweeps)
+- **Visualisation:** matplotlib (ROC/PR curves, confusion matrices, threshold sweeps), SHAP (global & local explainability)
 - **Development environment:** Jupyter notebooks, VS Code
 - **Deployment:** Flask or FastAPI (planned), Docker (planned)
 
@@ -90,6 +119,9 @@ The table below summarises the performance of our two leading models on the lock
 - `classification_report_*.txt` – detailed classification reports
 - **Plots (PNG)** – ROC curves, precision‑recall curves, cost‑vs‑threshold graphs and confusion matrices
 
+- `shap_mean_abs.csv` – global feature importance (mean |SHAP|)
+- `shap_cases.json` – selected TP/TN/borderline cases + operating threshold
+- **SHAP plots (PNG)** – beeswarm summary, mean |SHAP| bar, dependence plots, and local waterfall plots
 ## ⚡ Getting Started
 
 ### 1. Clone the repository and set up a virtual environment
@@ -125,9 +157,41 @@ python src/08_2_make_splits.py \
 
 Example commands are provided for each model in the `src/` directory. See the quickstart examples at the top of each training script for details. Each script saves metrics, threshold sweeps and plots to `reports/` and `reports/figures/`.
 
-### 5. (Coming soon) Run the API
+
+### 5. Run explainability (Week 15 — SHAP)
+
+After training the champion model, generate SHAP plots for the report:
+
+```bash
+python src/15_shap_explainability.py \
+  --model-path models/xgb_week8.joblib \
+  --data-train data/data_interim/splits_week8/train.csv \
+  --data-test  data/data_interim/splits_week8/test.csv \
+  --target-column Class \
+  --figdir reports/figures/week15 \
+  --outdir reports/week15_shap \
+  --sample-size 10000 \
+  --background-size 1000 \
+  --threshold 0.0884 \
+  --seed 42
+```
+
+Outputs:
+- Figures: `reports/figures/week15/`
+- Metadata: `reports/week15_shap/shap_mean_abs.csv`, `reports/week15_shap/shap_cases.json`
+
+
+### 6. (Coming soon) Run the API
 
 Once Month 5 tasks are complete, a Flask/FastAPI app will be added under `src/api/`. Instructions for starting the server and sending requests will be documented here.
+
+## 🗂️ Project Structure (high level)
+
+- `src/` — training, evaluation, and utility scripts (week-based)
+- `models/` — saved models (`*.joblib`)
+- `data/` — raw/interim/working datasets (raw data excluded from GitHub)
+- `reports/` — weekly markdown reports + run artifacts (metrics, sweeps, summaries)
+- `reports/figures/` — plots ready to embed in the thesis report
 
 ## 🧾 Integration with the Thesis Report
 
