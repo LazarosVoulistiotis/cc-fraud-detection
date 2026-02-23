@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "model_path": "models/xgb_week8.joblib",
+    "data_train": "data/data_interim/splits_week8/train.csv",
+    "data_test": "data/data_interim/splits_week8/test.csv",
+    "target_column": "Class",
+    "threshold": 0.0884,
+    "class_names": [
+      "legit",
+      "fraud"
+    ]
+  },
+  "shap_cases_meta": {
+    "threshold": 0.0884,
+    "cases": [
+      {
+        "name": "true_positive",
+        "index": 18427,
+        "true_label": 1,
+        "predicted_prob": 0.9999979734420776
+      },
+      {
+        "name": "true_negative",
+        "index": 49260,
+        "true_label": 0,
+        "predicted_prob": 8.333795875614669e-08
+      },
+      {
+        "name": "borderline",
+        "index": 53293,
+        "true_label": 0,
+        "predicted_prob": 0.08873743563890457
+      }
+    ]
+  },
+  "results": [
+    {
+      "index": 18427,
+      "true_label": 1,
+      "pred_label": 1,
+      "p_legit": 2.0265579223632812e-06,
+      "p_fraud": 0.9999979734420776,
+      "threshold": 0.0884,
+      "num_features": 10,
+      "num_samples": 5000,
+      "seed": 42,
+      "lime_top": [
+        {
+          "term": "V14 <= -0.43",
+          "weight": 0.006158292377825462
+        },
+        {
+          "term": "V12 <= -0.41",
+          "weight": 0.005760320106508548
+        },
+        {
+          "term": "V4 > 0.74",
+          "weight": 0.0055256776934877756
+        },
+        {
+          "term": "V3 <= -0.89",
+          "weight": 0.004668478885737816
+        },
+        {
+          "term": "V10 <= -0.54",
+          "weight": 0.0037278004014264215
+        },
+        {
+          "term": "V1 <= -0.92",
+          "weight": 0.0037186671764023052
+        },
+        {
+          "term": "hour_cos <= -0.87",
+          "weight": 0.003631395793784151
+        },
+        {
+          "term": "-0.50 < hour_sin <= 0.26",
+          "weight": 0.003264328648733819
+        },
+        {
+          "term": "V20 <= -0.21",
+          "weight": 0.003058831657778623
+        },
+        {
+          "term": "V19 > 0.46",
+          "weight": 0.002693324841222946
+        }
+      ],
+      "figure_path": "reports/figures/week16/lime_idx18427.png"
+    },
+    {
+      "index": 49260,
+      "true_label": 0,
+      "pred_label": 0,
+      "p_legit": 0.9999999403953552,
+      "p_fraud": 8.333795875614669e-08,
+      "threshold": 0.0884,
+      "num_features": 10,
+      "num_samples": 5000,
+      "seed": 42,
+      "lime_top": [
+        {
+          "term": "V4 <= -0.85",
+          "weight": -0.001136424426187227
+        },
+        {
+          "term": "V14 > 0.49",
+          "weight": -0.0009718809713981875
+        },
+        {
+          "term": "V8 > 0.33",
+          "weight": -0.0008634144371562127
+        },
+        {
+          "term": "V18 <= -0.50",
+          "weight": -0.000781296834584266
+        },
+        {
+          "term": "0.14 < V12 <= 0.62",
+          "weight": -0.0007686382228497012
+        },
+        {
+          "term": "-0.76 < V11 <= -0.03",
+          "weight": -0.0007665875646221377
+        },
+        {
+          "term": "V10 <= -0.54",
+          "weight": 0.0007191066570889982
+        },
+        {
+          "term": "-0.07 < V17 <= 0.40",
+          "weight": 0.0007090347898309119
+        },
+        {
+          "term": "V27 > 0.09",
+          "weight": -0.0007043976006574899
+        },
+        {
+          "term": "0.05 < V15 <= 0.65",
+          "weight": 0.0006157650452787133
+        }
+      ],
+      "figure_path": "reports/figures/week16/lime_idx49260.png"
+    },
+    {
+      "index": 53293,
+      "true_label": 0,
+      "pred_label": 1,
+      "p_legit": 0.911262571811676,
+      "p_fraud": 0.08873743563890457,
+      "threshold": 0.0884,
+      "num_features": 10,
+      "num_samples": 5000,
+      "seed": 42,
+      "lime_top": [
+        {
+          "term": "V14 <= -0.43",
+          "weight": 0.0027917321121912015
+        },
+        {
+          "term": "V12 <= -0.41",
+          "weight": 0.002114887331232039
+        },
+        {
+          "term": "V4 > 0.74",
+          "weight": 0.0017610288761876398
+        },
+        {
+          "term": "V11 > 0.74",
+          "weight": 0.0012863153858840453
+        },
+        {
+          "term": "V3 <= -0.89",
+          "weight": 0.001231522753077134
+        },
+        {
+          "term": "V19 > 0.46",
+          "weight": 0.0012080478161315908
+        },
+        {
+          "term": "V10 <= -0.54",
+          "weight": 0.0010763429523155848
+        },
+        {
+          "term": "-0.33 < V26 <= -0.05",
+          "weight": 0.0008883906252907335
+        },
+        {
+          "term": "V18 <= -0.50",
+          "weight": 0.0008381332271379722
+        },
+        {
+          "term": "Amount > 77.90",
+          "weight": 0.00075166858898388
+        }
+      ],
+      "figure_path": "reports/figures/week16/lime_idx53293.png"
+    }
+  ]
+}

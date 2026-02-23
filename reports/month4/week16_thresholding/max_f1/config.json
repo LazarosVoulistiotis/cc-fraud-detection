@@ -1,0 +1,15 @@
+{
+  "model_path": "models/xgb_week8.joblib",
+  "data_train": "data/data_interim/splits_week8/train.csv",
+  "data_val": "data/data_interim/splits_week8/val.csv",
+  "data_test": "data/data_interim/splits_week8/test.csv",
+  "target_column": "Class",
+  "policy": "max_f1",
+  "beta": 2.0,
+  "precision_min": 0.8,
+  "fp_cost": 1.0,
+  "fn_cost": 20.0,
+  "figdir": "reports/figures/week16/max_f1",
+  "outdir": "reports/week16_thresholding/max_f1",
+  "seed": 42
+}

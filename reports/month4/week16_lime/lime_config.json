@@ -1,0 +1,14 @@
+{
+  "model_path": "models/xgb_week8.joblib",
+  "data_train": "data/data_interim/splits_week8/train.csv",
+  "data_test": "data/data_interim/splits_week8/test.csv",
+  "target_column": "Class",
+  "shap_cases_path": "reports/month4/week15_shap/shap_cases.json",
+  "indices": null,
+  "figdir": "reports/figures/week16",
+  "outdir": "reports/week16_lime",
+  "threshold": 0.0884,
+  "num_features": 10,
+  "num_samples": 5000,
+  "seed": 42
+}

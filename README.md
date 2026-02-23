@@ -42,7 +42,7 @@ The project follows a six‑month roadmap designed to build an industry‑ready 
 - Threshold & policy tuning: For each model, sweep thresholds and optimise a cost‑based objective (e.g. `cost_fp=1`, `cost_fn=20`). Select thresholds on the validation set and apply to the test set.
 - Shortlist & business decision: Compare models based on precision, recall, F1, ROC‑AUC and PR‑AUC. The shortlist currently favours XGBoost over Random Forest because it achieves similar recall but fewer false positives (see current snapshot below). Document this decision and its business interpretation.
 
-### Month 4 – Refinement & Explainability (in progress — Week 15 SHAP completed)
+### Month 4 – Refinement & Explainability (completed — Week 15 SHAP + Week 16 LIME & final threshold)
 
 - Hyper‑parameter tuning: Systematically tune the best models (e.g. number of trees, depth, learning rate) using grid/random search on relevant metrics.
 - Feature engineering: Revisit EDA findings to add or transform features where possible. Explore feature selection and possibly train an autoencoder for anomaly detection.
@@ -64,12 +64,20 @@ The project follows a six‑month roadmap designed to build an industry‑ready 
 - Presentation preparation: Create slides and a demo to showcase the business problem, modelling approach, results and the working API.
 - Future work: Outline possible enhancements such as streaming simulations, ensemble stacking, model monitoring and advanced fraud techniques.
 
-## ✅ Current Snapshot (Month 4)
+## ✅ Current Snapshot (Month 4 — Final)
 
-The table below summarises the performance of our two leading models on the locked test set using cost‑optimised thresholds. Both were trained on stratified splits with class weighting and evaluated on precision, recall, F1, ROC‑AUC and PR‑AUC.
+The table below summarises the performance of our two leading models on the locked test set. During Month 4 we finalised **XGBoost** as the champion model and selected the final operating threshold on the **validation set** using a **precision constraint policy (precision ≥ 0.80)**, then reported results once on the **locked test set**.
 
-| Model | Threshold policy | Threshold | Precision (Fraud) | Recall (Fraud) | F1 | ROC‑AUC | PR‑AUC | TP | FP | FN |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Model | Threshold policy | Selected on | Threshold | Precision (Fraud) | Recall (Fraud) | F1 | F2 | MCC | ROC‑AUC | PR‑AUC | TP | FP | FN |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Random Forest | cost‑optimal | validation | 0.2354 | 0.7549 | 0.8105 | 0.7817 | 0.7987 | 0.7815 | 0.9719 | 0.8061 | 77 | 25 | 18 |
+| **XGBoost (Champion)** | **precision ≥ 0.80 (final)** | **validation** | **0.1279** | **0.8280** | **0.8105** | **0.8191** | **0.8140** | **0.8189** | **0.9699** | **0.8171** | **77** | **16** | **18** |
+
+**Business interpretation:** XGBoost captures **77** frauds and misses **18**, while keeping false alarms low (**16** false positives on ~56k legitimate transactions). Compared with cost‑based thresholding, the precision‑constraint policy reduces analyst workload and customer friction without reducing fraud capture.
+
+---
+
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Random Forest | cost‑optimal (val‑selected) | 0.2354 | 0.7549 | 0.8105 | 0.7817 | 0.9719 | 0.8061 | 77 | 25 | 18 |
 | XGBoost | cost‑optimal (val‑selected) | 0.0884 | 0.7938 | 0.8105 | 0.8021 | 0.9699 | 0.8171 | 77 | 20 | 18 |
 
@@ -102,6 +110,28 @@ To make the champion model auditable and “responsible”, Week 15 applies **SH
 ![Mean |SHAP| Bar](reports/figures/week15/shap_mean_abs_bar.png)
 
 </details>
+
+
+
+
+## 🔎 Explainability (Week 16 — LIME + Final Thresholding)
+
+Week 16 completes Month 4 by adding **LIME Tabular** (model‑agnostic) local explanations for the same three case studies used in SHAP (TP/TN/Borderline), and by finalising the **operating threshold policy** on the validation set.
+
+**Where to find the outputs**
+- Weekly write‑up: `reports/16_week16_lime_thresholding_deployment.md`
+- LIME report snippet: `reports/report_snippets/week16_lime.md`
+- LIME figures: `reports/figures/week16/` (e.g., `lime_idx18427.png`, `lime_idx49260.png`, `lime_idx53293.png`)
+- LIME metadata: `reports/week16_lime/` (`lime_explanations.json`, `lime_top_features.csv`, `lime_config.json`)
+
+**Final thresholding (Week 16)**
+- Script: `src/16_thresholding_and_metrics.py`
+- Policies evaluated: `cost_based`, `max_f1`, `max_fbeta (β=2)`, `precision_constraint`
+- **Final policy locked:** `precision_constraint_p80` (precision ≥ 0.80) → **thr ≈ 0.1279** (selected on validation, reported on locked test)
+
+**Deployment readiness narrative**
+- Report snippet: `reports/report_snippets/week16_final_model_and_deployment.md`
+- Deliverables + milestone closure: `reports/report_snippets/week16_deliverables_and_milestone.md`
 
 
 ## 🧰 Technology Stack
@@ -179,6 +209,28 @@ python src/15_shap_explainability.py \
 Outputs:
 - Figures: `reports/figures/week15/`
 - Metadata: `reports/week15_shap/shap_mean_abs.csv`, `reports/week15_shap/shap_cases.json`
+
+
+### 6. Run explainability (Week 16 — LIME)
+
+Generate model‑agnostic local explanations for the same TP/TN/Borderline cases used in SHAP:
+
+```bash
+python src/16_lime_explainability.py   --model-path models/xgb_week8.joblib   --data-train data/data_interim/splits_week8/train.csv   --data-test  data/data_interim/splits_week8/test.csv   --target-column Class   --shap-cases reports/week15_shap/shap_cases.json   --figdir reports/figures/week16   --outdir reports/week16_lime   --threshold 0.0884   --num-features 10   --num-samples 5000   --seed 42
+```
+
+### 7. Final thresholding & metrics (Week 16 — VAL-selected, TEST locked)
+
+Select the operating threshold on the **validation set** and evaluate once on the **locked test set**:
+
+```bash
+python src/16_thresholding_and_metrics.py   --model-path models/xgb_week8.joblib   --data-train data/data_interim/splits_week8/train.csv   --data-val   data/data_interim/splits_week8/val.csv   --data-test  data/data_interim/splits_week8/test.csv   --target-column Class   --policy precision_constraint --precision-min 0.80   --figdir reports/figures/week16/precision_constraint_p80   --outdir reports/week16_thresholding/precision_constraint_p80   --seed 42
+```
+
+Outputs:
+- Figures: `reports/figures/week16/precision_constraint_p80/`
+- Metrics + sweeps: `reports/week16_thresholding/precision_constraint_p80/`
+
 
 
 ### 6. (Coming soon) Run the API
