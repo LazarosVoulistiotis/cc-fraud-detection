@@ -1,0 +1,18 @@
+{
+  "policy_name": "precision_constraint_p80",
+  "policy_version": "week16-locked",
+  "selected_on": "validation",
+  "threshold": 0.1279,
+  "positive_class": 1,
+  "negative_class": 0,
+  "score_field": "fraud_probability",
+  "label_rule": "fraud if fraud_probability >= threshold else legit",
+  "reference_model_artifact": "models/xgb_final.joblib",
+  "previous_policy_reference": {
+    "policy_name": "cost_based",
+    "threshold": 0.0884,
+    "cost_fp": 1,
+    "cost_fn": 20,
+    "note": "kept only as historical reference; not the final serving policy"
+  }
+}

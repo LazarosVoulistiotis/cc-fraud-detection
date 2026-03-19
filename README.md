@@ -1,274 +1,278 @@
-<!-- README for the Credit Card Fraud Detection System (Final Year Project) -->
+# 💳 Credit Card Fraud Detection System
 
-# 💳 Credit Card Fraud Detection – Final Year Project
+A production-inspired machine learning project for detecting fraudulent credit card transactions under extreme class imbalance.
 
-This repository contains the code, documentation and roadmap for a credit card fraud detection system developed as part of a final year thesis project. The goal is to design a production‑inspired solution that not only trains accurate machine learning models but also considers business requirements such as threshold policies, cost trade‑offs, model explainability and deployment readiness. The work follows a multi‑month roadmap (see below) and evolves from data exploration through modelling, refinement and deployment.
+This repository documents the full lifecycle of the project: data understanding, modelling, business-driven threshold selection, explainability, and a working FastAPI inference service for deployment-style demonstration.
 
-## 🧠 Why Fraud Detection Is Challenging
+---
 
-Credit card fraud detection is a rare‑event classification problem. In our dataset, only about **0.17 %** of transactions are fraudulent. This extreme class imbalance means that accuracy is not a useful metric: a naive model that labels everything as legitimate will achieve **>99 % accuracy** but catch **zero** frauds. What matters to businesses is the trade‑off between catching fraud (**recall**) and minimising false alarms (**precision**). False negatives (missed fraud) cause direct financial loss, whereas false positives (legitimate transactions flagged as fraud) irritate customers and increase operational costs. Consequently, we treat the model’s probability threshold as an operational policy to be tuned according to business costs instead of defaulting to 0.5.
+## 🚀 Project Highlights
 
-## 📊 Dataset
+- Built and evaluated multiple fraud detection models, including Logistic Regression, Decision Tree, Random Forest, and XGBoost
+- Selected **XGBoost** as the final champion model based on locked test-set performance and business suitability
+- Treated the classification threshold as an **operational policy**, not a fixed default
+- Finalised a **precision-constrained threshold policy** to reduce false positives while maintaining strong fraud capture
+- Added **SHAP** and **LIME** explainability for global and local model interpretation
+- Implemented a working **FastAPI** service with:
+  - `GET /health`
+  - `GET /metadata`
+  - `POST /predict`
+  - `POST /predict_by_id`
+- Structured the repository to support both **academic reporting** and **portfolio presentation**
 
-We use the Kaggle Credit Card Fraud Detection dataset, which contains **284,807 transactions** recorded over two days with **31 anonymised features**. The features include principal components (**V1…V28**) derived via PCA, along with **Time** (seconds since the first transaction) and **Amount**. The target label **Class** indicates whether a transaction is fraudulent (1) or legitimate (0). Only **492** transactions are frauds, highlighting the need to handle class imbalance. The raw CSV file (**creditcard.csv**) is stored locally under `data/data_raw/` and is intentionally not committed to Git for privacy and licensing reasons.
+---
 
-### Key dataset considerations
+## 📌 Problem Statement
 
-- **Imbalance:** Fraud cases make up **<0.2 %** of the data, so special techniques (e.g. resampling, class weighting, cost‑sensitive learning) are required.
-- **Anonymised features:** Most features are PCA components; interpreting them requires model explainability methods (SHAP/LIME) rather than domain knowledge.
-- **Data cleaning:** The dataset is known to have no missing values, but we still verify this during exploratory analysis and scale/transform features as needed.
+Credit card fraud detection is a high-impact binary classification problem with severe class imbalance. In the public benchmark dataset used here, fraud represents only a tiny fraction of all transactions, which makes raw accuracy misleading.
 
-## 📅 Project Roadmap
+The real challenge is not to maximise accuracy, but to balance:
 
-The project follows a six‑month roadmap designed to build an industry‑ready fraud detection system. Each month has clear learning objectives, coding tasks and milestones extracted from the roadmap document. Below is a high‑level summary of what has been completed so far and what remains to be done.
+- **Recall** — catching as many fraudulent transactions as possible
+- **Precision** — limiting false alarms that create customer friction and analyst overhead
+- **Operational cost** — recognising that missed fraud is usually much more expensive than an unnecessary review
 
-### Month 1 – Foundations and Planning (completed)
+This project approaches fraud detection as a **business-aware ML system**, not just a leaderboard exercise.
 
-- Learn Python & ML basics: Complete an introductory course in Python for data science and a beginner machine learning course.
-- Project planning: Define the problem scope, understand class imbalance challenges, and set up the development environment (Python, Jupyter/VS Code, Git). Draft the introduction for the thesis report.
-- Data acquisition: Obtain the Kaggle dataset and confirm access; write a short script to load it and compute the fraud rate to appreciate the imbalance.
+---
 
-### Month 2 – Data Understanding & Preprocessing (completed)
+## 🧠 Final Model Snapshot
 
-- Exploratory data analysis (EDA): Inspect distributions of each feature, particularly Amount and Time, and compare fraud vs non‑fraud distributions. Calculate and visualise the class imbalance and check for missing values.
-- Feature engineering: Consider deriving useful features (e.g. hour of day from Time or threshold‑based flags) and note ideas for later use.
-- Handling imbalance: Research and plan techniques like random oversampling/undersampling, SMOTE and cost‑sensitive learning to address the extreme imbalance.
-- Reporting: Document the dataset characteristics, EDA findings and methodology plan in the report.
+### Champion Model
+- **Model:** XGBoost Classifier
+- **Frozen artifact:** `models/xgb_final.joblib`
+- **Serving threshold policy:** `precision_constraint_p80`
+- **Threshold:** `0.1279`
 
-### Month 3 – Modelling & Business Selection (completed)
+### Final Locked Test Performance
 
-- Baseline models: Implement logistic regression and decision trees; evaluate using stratified train/validation/test splits. As expected, these simple models achieve high accuracy but low recall on fraud.
-- Ensemble models: Train Random Forest and gradient‑boosted trees (XGBoost). Use cross‑validation, stratified splitting and cost‑sensitive parameters such as `scale_pos_weight`. Perform basic hyper‑parameter tuning.
-- Threshold & policy tuning: For each model, sweep thresholds and optimise a cost‑based objective (e.g. `cost_fp=1`, `cost_fn=20`). Select thresholds on the validation set and apply to the test set.
-- Shortlist & business decision: Compare models based on precision, recall, F1, ROC‑AUC and PR‑AUC. The shortlist currently favours XGBoost over Random Forest because it achieves similar recall but fewer false positives (see current snapshot below). Document this decision and its business interpretation.
-
-### Month 4 – Refinement & Explainability (completed — Week 15 SHAP + Week 16 LIME & final threshold)
-
-- Hyper‑parameter tuning: Systematically tune the best models (e.g. number of trees, depth, learning rate) using grid/random search on relevant metrics.
-- Feature engineering: Revisit EDA findings to add or transform features where possible. Explore feature selection and possibly train an autoencoder for anomaly detection.
-- Explainability: Integrate SHAP to compute global and local feature importances and identify which PCA components drive fraud predictions. Optionally apply LIME to explain individual predictions.
-- Report updates: Expand the report with tuning results, feature engineering notes and explainability findings. Summarise the final model choice.
-
-### Month 5 – Deployment & MLOps (planned)
-
-- Model serialization: Save the final model to disk using joblib or a similar tool.
-- REST API: Build a Flask/FastAPI service that loads the model and exposes a `/predict` endpoint. The API should accept transaction features, apply the same preprocessing as during training, and return the fraud probability and prediction.
-- User interface: Optionally develop a simple web page or Streamlit dashboard for demo purposes.
-- Containerization: Write a Dockerfile to package the API and its dependencies for consistent deployment. Test locally and, if feasible, deploy to a cloud service (e.g. AWS or Azure).
-- Scalability & monitoring: Consider how the system could handle real‑time streams and large transaction volumes. Outline a future architecture using message queues and microservices.
-
-### Month 6 – Finalization, Testing & Presentation (planned)
-
-- Comprehensive testing: Validate the final model on a hold‑out test set and stress‑test the API with edge cases.
-- Documentation: Finalise the thesis report with a cohesive narrative, executive summary, and professional formatting. Clean up code comments and write user‑friendly documentation.
-- Presentation preparation: Create slides and a demo to showcase the business problem, modelling approach, results and the working API.
-- Future work: Outline possible enhancements such as streaming simulations, ensemble stacking, model monitoring and advanced fraud techniques.
-
-## ✅ Current Snapshot (Month 4 — Final)
-
-The table below summarises the performance of our two leading models on the locked test set. During Month 4 we finalised **XGBoost** as the champion model and selected the final operating threshold on the **validation set** using a **precision constraint policy (precision ≥ 0.80)**, then reported results once on the **locked test set**.
-
-| Model | Threshold policy | Selected on | Threshold | Precision (Fraud) | Recall (Fraud) | F1 | F2 | MCC | ROC‑AUC | PR‑AUC | TP | FP | FN |
+| Model | Threshold Policy | Selected On | Threshold | Precision | Recall | F1 | F2 | MCC | ROC-AUC | PR-AUC | TP | FP | FN |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Random Forest | cost‑optimal | validation | 0.2354 | 0.7549 | 0.8105 | 0.7817 | 0.7987 | 0.7815 | 0.9719 | 0.8061 | 77 | 25 | 18 |
-| **XGBoost (Champion)** | **precision ≥ 0.80 (final)** | **validation** | **0.1279** | **0.8280** | **0.8105** | **0.8191** | **0.8140** | **0.8189** | **0.9699** | **0.8171** | **77** | **16** | **18** |
+| Random Forest | cost-optimal | validation | 0.2354 | 0.7549 | 0.8105 | 0.7817 | 0.7987 | 0.7815 | 0.9719 | 0.8061 | 77 | 25 | 18 |
+| **XGBoost (Champion)** | **precision ≥ 0.80** | **validation** | **0.1279** | **0.8280** | **0.8105** | **0.8191** | **0.8140** | **0.8189** | **0.9699** | **0.8171** | **77** | **16** | **18** |
 
-**Business interpretation:** XGBoost captures **77** frauds and misses **18**, while keeping false alarms low (**16** false positives on ~56k legitimate transactions). Compared with cost‑based thresholding, the precision‑constraint policy reduces analyst workload and customer friction without reducing fraud capture.
+### Business Interpretation
 
----
-
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Random Forest | cost‑optimal (val‑selected) | 0.2354 | 0.7549 | 0.8105 | 0.7817 | 0.9719 | 0.8061 | 77 | 25 | 18 |
-| XGBoost | cost‑optimal (val‑selected) | 0.0884 | 0.7938 | 0.8105 | 0.8021 | 0.9699 | 0.8171 | 77 | 20 | 18 |
-
-**Business interpretation:** Both models capture the same number of frauds (77) and miss 18, but XGBoost produces fewer false alarms, reducing analyst workload and customer friction. A recall‑target policy can achieve slightly higher recall but results in thousands of false positives, which is operationally unacceptable. Thus, we select XGBoost as the current champion model.
+The final XGBoost model catches **77 frauds**, misses **18**, and keeps false positives low at **16** on the locked test set. This makes it more operationally attractive than alternatives that achieve similar recall but generate more false alarms.
 
 ---
 
-## 🔍 Explainability (Week 15 — SHAP)
+## 🗂️ Dataset
 
-To make the champion model auditable and “responsible”, Week 15 applies **SHAP TreeExplainer** to the final XGBoost model and produces both **global** and **local** explanations.
+This project uses the well-known Kaggle Credit Card Fraud Detection dataset.
 
-**Where to find the outputs**
-- Weekly write‑up: `reports/15_week15_shap_explainability.md`
-- Report snippet (copy‑paste): `reports/report_snippets/week15_shap.md`
-- Figures: `reports/figures/week15/`
-- Metadata: `reports/week15_shap/`
+### Raw Dataset Characteristics
+- **Rows:** 284,807 transactions
+- **Fraud cases:** 492
+- **Fraud rate:** ~0.17%
+- **Features:** `Time`, `V1`–`V28`, `Amount`, `Class`
 
-**Key SHAP deliverables**
-- Global: beeswarm summary + mean(|SHAP|) bar
-- Dependence plots: top‑2 drivers (this run: V4 and V14)
-- Local case studies: True Positive, True Negative, Borderline near threshold **0.0884**
+### Notes
+- `V1`–`V28` are anonymised PCA-style features
+- `Time` is measured in seconds from the first recorded transaction
+- `Amount` is the transaction value
+- `Class = 1` indicates fraud
+- The raw dataset is stored locally under `data/data_raw/` and is **not committed** to the repository
 
-<details>
-<summary><b>Visual preview (click to expand)</b></summary>
+---
 
-**Global summary (beeswarm)**  
-![SHAP Summary (Beeswarm)](reports/figures/week15/shap_summary_beeswarm.png)
+## ⚙️ Serving Design
 
-**Global importance (mean |SHAP| bar)**  
-![Mean |SHAP| Bar](reports/figures/week15/shap_mean_abs_bar.png)
+The deployed inference contract uses a frozen serving schema.
 
-</details>
+### Input to `POST /predict`
+The API accepts **raw canonical input**:
+- `Time`
+- `V1` to `V28`
+- `Amount`
 
+### Engineered Inside the API
+The API derives the following features at serving time:
+- `Hour`
+- `hour_sin`
+- `hour_cos`
+- `Amount_log1p`
 
+### Demo Endpoint
+The `POST /predict_by_id` endpoint accepts a frozen `row_id` and reconstructs the raw payload from:
 
+- `data/data_interim/splits_week8/test_with_row_id.csv`
 
-## 🔎 Explainability (Week 16 — LIME + Final Thresholding)
+This is intended for demonstration and report evidence, not for real production use.
 
-Week 16 completes Month 4 by adding **LIME Tabular** (model‑agnostic) local explanations for the same three case studies used in SHAP (TP/TN/Borderline), and by finalising the **operating threshold policy** on the validation set.
+---
 
-**Where to find the outputs**
-- Weekly write‑up: `reports/16_week16_lime_thresholding_deployment.md`
-- LIME report snippet: `reports/report_snippets/week16_lime.md`
-- LIME figures: `reports/figures/week16/` (e.g., `lime_idx18427.png`, `lime_idx49260.png`, `lime_idx53293.png`)
-- LIME metadata: `reports/week16_lime/` (`lime_explanations.json`, `lime_top_features.csv`, `lime_config.json`)
+## 🔍 Explainability
 
-**Final thresholding (Week 16)**
-- Script: `src/16_thresholding_and_metrics.py`
-- Policies evaluated: `cost_based`, `max_f1`, `max_fbeta (β=2)`, `precision_constraint`
-- **Final policy locked:** `precision_constraint_p80` (precision ≥ 0.80) → **thr ≈ 0.1279** (selected on validation, reported on locked test)
+Model explainability is a core part of the system.
 
-**Deployment readiness narrative**
-- Report snippet: `reports/report_snippets/week16_final_model_and_deployment.md`
-- Deliverables + milestone closure: `reports/report_snippets/week16_deliverables_and_milestone.md`
+### SHAP
+Used for:
+- global feature importance
+- beeswarm analysis
+- dependence plots
+- local case studies
 
+### LIME
+Used for:
+- local explanation of individual predictions
+- complementary model-agnostic interpretation
+- case-level reporting for TP / TN / borderline examples
 
-## 🧰 Technology Stack
+This helps make the final model more transparent and more suitable for fraud/risk use cases where interpretability matters.
 
-- **Programming language:** Python 3.13
-- **Data analysis & modelling:** pandas, numpy, scikit‑learn (LogReg, Decision Tree, Random Forest), XGBoost
-- **Visualisation:** matplotlib (ROC/PR curves, confusion matrices, threshold sweeps), SHAP (global & local explainability)
-- **Development environment:** Jupyter notebooks, VS Code
-- **Deployment:** Flask or FastAPI (planned), Docker (planned)
+---
 
-### Artifacts generated during runs include
+## 🌐 API Endpoints
 
-- `metrics.json` – summary of evaluation metrics for each model
-- `threshold_sweep_*.csv` – threshold vs cost/metrics table
-- `classification_report_*.txt` – detailed classification reports
-- **Plots (PNG)** – ROC curves, precision‑recall curves, cost‑vs‑threshold graphs and confusion matrices
+### `GET /health`
+Simple liveness check.
 
-- `shap_mean_abs.csv` – global feature importance (mean |SHAP|)
-- `shap_cases.json` – selected TP/TN/borderline cases + operating threshold
-- **SHAP plots (PNG)** – beeswarm summary, mean |SHAP| bar, dependence plots, and local waterfall plots
-## ⚡ Getting Started
+### `GET /metadata`
+Returns:
+- model version
+- threshold policy
+- threshold used
+- raw input features
+- engineered features
+- final model feature order
 
-### 1. Clone the repository and set up a virtual environment
+### `POST /predict`
+Scores a raw transaction payload and returns:
+- fraud probability
+- predicted label
+- threshold used
+
+### `POST /predict_by_id`
+Scores a frozen demo row and returns:
+- fraud probability
+- predicted label
+- `row_id`
+- `true_label`
+
+---
+
+## 🛠️ Tech Stack
+
+- **Language:** Python
+- **ML / Data:** pandas, numpy, scikit-learn, XGBoost
+- **Explainability:** SHAP, LIME
+- **API:** FastAPI, Pydantic, Uvicorn
+- **Serialization:** joblib
+- **Visualisation:** matplotlib
+- **Environment:** VS Code, Jupyter, Git, GitHub
+
+---
+
+## ▶️ Quick Start
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/LazarosVoulistiotis/cc-fraud-detection.git
 cd cc-fraud-detection
+```
+
+### 2. Create and activate a virtual environment
+
+#### Windows PowerShell
+```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+.venv\Scripts\Activate.ps1
+```
+
+#### Git Bash
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Obtain the dataset
-
-Download `creditcard.csv` from Kaggle’s Credit Card Fraud Detection page and place it in `data/data_raw/`. This file is not provided in the repository due to licensing.
-
-### 3. Create stratified splits
-
-Run the splitting script to generate train/validation/test CSVs:
+### 4. Run the API
 
 ```bash
-python src/08_2_make_splits.py \
-  --data data/data_raw/creditcard.csv \
-  --outdir data/data_interim \
-  --target Class \
-  --test-size 0.20 \
-  --val-size 0.10 \
-  --seed 42 \
-  --drop-duplicates
+uvicorn src.api.main:app --reload
 ```
 
-### 4. Train and evaluate models
+### 5. Open the docs
 
-Example commands are provided for each model in the `src/` directory. See the quickstart examples at the top of each training script for details. Each script saves metrics, threshold sweeps and plots to `reports/` and `reports/figures/`.
-
-
-### 5. Run explainability (Week 15 — SHAP)
-
-After training the champion model, generate SHAP plots for the report:
-
-```bash
-python src/15_shap_explainability.py \
-  --model-path models/xgb_week8.joblib \
-  --data-train data/data_interim/splits_week8/train.csv \
-  --data-test  data/data_interim/splits_week8/test.csv \
-  --target-column Class \
-  --figdir reports/figures/week15 \
-  --outdir reports/week15_shap \
-  --sample-size 10000 \
-  --background-size 1000 \
-  --threshold 0.0884 \
-  --seed 42
+```text
+http://127.0.0.1:8000/docs
 ```
 
-Outputs:
-- Figures: `reports/figures/week15/`
-- Metadata: `reports/week15_shap/shap_mean_abs.csv`, `reports/week15_shap/shap_cases.json`
+---
 
+## 📁 Repository Structure
 
-### 6. Run explainability (Week 16 — LIME)
-
-Generate model‑agnostic local explanations for the same TP/TN/Borderline cases used in SHAP:
-
-```bash
-python src/16_lime_explainability.py   --model-path models/xgb_week8.joblib   --data-train data/data_interim/splits_week8/train.csv   --data-test  data/data_interim/splits_week8/test.csv   --target-column Class   --shap-cases reports/week15_shap/shap_cases.json   --figdir reports/figures/week16   --outdir reports/week16_lime   --threshold 0.0884   --num-features 10   --num-samples 5000   --seed 42
+```text
+src/                          # training, tuning, explainability, API code
+src/api/                      # FastAPI inference service
+models/                       # saved model artifacts
+configs/                      # frozen threshold + feature schema
+data/                         # raw/interim/working datasets
+reports/                      # monthly reports, snippets, figures, evidence
+README.md                     # project overview
+README_deployment.md          # deployment-focused usage guide
 ```
 
-### 7. Final thresholding & metrics (Week 16 — VAL-selected, TEST locked)
+---
 
-Select the operating threshold on the **validation set** and evaluate once on the **locked test set**:
+## 📚 Key Artifacts
 
-```bash
-python src/16_thresholding_and_metrics.py   --model-path models/xgb_week8.joblib   --data-train data/data_interim/splits_week8/train.csv   --data-val   data/data_interim/splits_week8/val.csv   --data-test  data/data_interim/splits_week8/test.csv   --target-column Class   --policy precision_constraint --precision-min 0.80   --figdir reports/figures/week16/precision_constraint_p80   --outdir reports/week16_thresholding/precision_constraint_p80   --seed 42
-```
+- `models/xgb_final.joblib` — frozen final champion model
+- `configs/threshold.json` — final threshold policy
+- `configs/feature_schema.json` — frozen serving schema
+- `reports/month5/model_card.md` — model card
+- `README_deployment.md` — local deployment guide
 
-Outputs:
-- Figures: `reports/figures/week16/precision_constraint_p80/`
-- Metrics + sweeps: `reports/week16_thresholding/precision_constraint_p80/`
+---
 
+## ✅ Current Status
 
+**Completed**
+- Data exploration and preprocessing
+- Baseline modelling
+- Business-aware model selection
+- Threshold optimisation
+- SHAP explainability
+- LIME explainability
+- Frozen model artifact and serving schema
+- Working FastAPI inference API
 
-### 6. (Coming soon) Run the API
+**Next steps**
+- Dockerisation
+- optional Streamlit/demo UI
+- deployment hardening
+- monitoring and future MLOps extensions
 
-Once Month 5 tasks are complete, a Flask/FastAPI app will be added under `src/api/`. Instructions for starting the server and sending requests will be documented here.
+---
 
-## 🗂️ Project Structure (high level)
+## 🎯 What This Project Demonstrates
 
-- `src/` — training, evaluation, and utility scripts (week-based)
-- `models/` — saved models (`*.joblib`)
-- `data/` — raw/interim/working datasets (raw data excluded from GitHub)
-- `reports/` — weekly markdown reports + run artifacts (metrics, sweeps, summaries)
-- `reports/figures/` — plots ready to embed in the thesis report
+This project showcases hands-on experience in:
 
-## 🧾 Integration with the Thesis Report
+- applied machine learning under class imbalance
+- model evaluation beyond accuracy
+- threshold optimisation for business goals
+- explainable AI for risk-sensitive use cases
+- turning an ML model into a deployable inference service
+- structuring a project for both thesis documentation and portfolio presentation
 
-This repository is structured to support report writing. Under `reports/` you will find month‑by‑month folders containing notes, figures and report snippets. For instance:
-
-- `reports/month1/` – introductory notes on the problem and dataset
-- `reports/month2/` – EDA, scaling experiments and imbalance analysis
-- `reports/month3/` – modelling results and business selection narrative
-- `reports/report_snippets/` – ready‑to‑paste paragraphs used in the thesis
-
-In the later months the report will include sections on hyper‑parameter tuning, feature engineering, explainability, deployment architecture and final conclusions.
+---
 
 ## 👤 Author
 
-Lazaros Voulistiotis – final year Computer Science student, aspiring Machine Learning Engineer.
+**Lazaros Voulistiotis**  
+Final-year BSc Computer Science student  
+Aspiring Machine Learning Engineer
 
-If you find this project useful or have suggestions, feel free to open an issue or contact me. Contributions are welcome!
+---
 
-## 🔮 Future Work
+## 📄 License / Dataset Notice
 
-The roadmap extends beyond the initial six months. Possible stretch goals include:
-
-- Streaming simulation: Feed transactions to the API in real time and monitor detection latency.
-- Ensemble stacking: Combine multiple models (e.g. Random Forest and XGBoost) in a voting or stacking ensemble.
-- Model monitoring & drift detection: Plan mechanisms to detect changes in fraud patterns and trigger model retraining.
-- Graph‑based fraud detection: Explore graph algorithms to identify fraud rings and relational anomalies.
-
-By systematically following this roadmap and integrating best practices in machine learning and MLOps, this project aims to deliver a credible, real‑world‑ready fraud detection solution that can be showcased to both academic evaluators and industry recruiters.
+This repository contains the code, report artifacts, and deployment skeleton for the project. The original raw dataset is not redistributed in this repository. Please obtain the Kaggle dataset separately and place it under `data/data_raw/` if you want to reproduce the full pipeline.
