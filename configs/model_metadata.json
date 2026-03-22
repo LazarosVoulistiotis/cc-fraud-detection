@@ -1,0 +1,13 @@
+{
+  "model_version": "xgb_final",
+  "git_commit": "REPLACE_WITH_TRAINING_COMMIT_SHA",
+  "train_date": "2026-03-21",
+  "training_data_reference": "data/data_interim/splits_week8/train.csv",
+  "training_target": "Class",
+  "framework": "xgboost",
+  "task": "binary_classification",
+  "notes": [
+    "Frozen serving artifact for Week 17/18 API",
+    "Version metadata captured manually at artifact freeze time"
+  ]
+}

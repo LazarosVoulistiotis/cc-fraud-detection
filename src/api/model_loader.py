@@ -1,10 +1,14 @@
-"""Το model_loader.py είναι υπεύθυνο για να:
-    εντοπίζει σωστά τα artifacts/configs
-    τα φορτώνει με ασφάλεια
-    αποτυγχάνει καθαρά όταν λείπει κάτι
-    κρατάει loaded resources στη μνήμη
-    δίνει στο υπόλοιπο API έτοιμα objects χωρίς επαναλαμβανόμενο loading
-Με πολύ απλά λόγια είναι το “resource manager” του FastAPI app μας."""
+"""model_loader.py
+
+Resource manager του FastAPI app.
+
+Υπεύθυνο για:
+- εντοπισμό artifacts / configs
+- ασφαλές loading
+- καθαρά failures όταν λείπει κάτι
+- caching των loaded resources
+- παροχή έτοιμων objects στο υπόλοιπο API χωρίς επαναλαμβανόμενο loading
+"""
 
 from functools import lru_cache
 """Εδώ εισάγουμε το decorator lru_cache.
@@ -24,6 +28,7 @@ from functools import lru_cache
 
 from pathlib import Path # για ασφαλή/καθαρό χειρισμό paths
 from typing import Any, Dict # typing helpers
+import json
 
 import joblib # για serialization/deserialization μοντέλων, με joblib.load(...) φορτώνεις το trained model object πίσω στη μνήμη
 import pandas as pd
@@ -31,12 +36,52 @@ import pandas as pd
 # Αυτή η function επιστρέφει το root directory του project.
 def get_project_root() -> Path:
     """
-    src/api/model_loader.py -> parents[2] = project root 
-    (parents[0] είναι ο φάκελος api)
-    __file__ Είναι το path του τρέχοντος αρχείου, δηλαδή του model_loader.py.
-    πολύ σημαντικό στο deployment, γιατί δεν θέλουμε relative path bugs
+    Resolve project root directory from src/api/model_loader.py.
+
+    src/api/model_loader.py -> parents[2] = project root
+    parents[0] = api
+    parents[1] = src
+    parents[2] = project root
     """
     return Path(__file__).resolve().parents[2]
+
+
+def validate_threshold_config(cfg: Dict[str, Any]) -> None:
+    """
+    Validate threshold serving config.
+
+    Required keys:
+    - policy_name
+    - policy_version
+    - threshold
+    - reference_model_artifact
+
+    Validation goals:
+    - prevent silent schema drift
+    - ensure threshold is numeric and in [0, 1]
+    - ensure artifact path exists as a non-empty string reference
+    """
+    required_keys = [
+        "policy_name",
+        "policy_version",
+        "threshold",
+        "reference_model_artifact",
+    ]
+
+    missing = [key for key in required_keys if key not in cfg]
+    if missing:
+        raise ValueError(f"Threshold config missing required keys: {missing}")
+
+    threshold = cfg["threshold"]
+    if not isinstance(threshold, (int, float)):
+        raise ValueError("threshold must be numeric.")
+    if not (0.0 <= float(threshold) <= 1.0):
+        raise ValueError("threshold must be between 0 and 1.")
+
+    artifact_ref = cfg["reference_model_artifact"]
+    if not isinstance(artifact_ref, str) or not artifact_ref.strip():
+        raise ValueError("reference_model_artifact must be a non-empty string.")
+
 
 # Αυτή η function φορτώνει το threshold.json και επιστρέφει το περιεχόμενό του ως Python dict.
 @lru_cache(maxsize=1)
@@ -60,6 +105,18 @@ def load_feature_schema() -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+# Αυτή η function φορτώνει το model_metadata.json και επιστρέφει το περιεχόμενό του ως Python dict. Και εδώ το αποτέλεσμα γίνεται cached.
+@lru_cache(maxsize=1)
+def load_model_metadata() -> Dict[str, Any]:
+    path = get_project_root() / "configs" / "model_metadata.json"
+    if not path.exists():
+        raise FileNotFoundError(f"Model metadata file not found: {path}")
+
+    import json
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 # Αυτή η function επιστρέφει το path του μοντέλου που θα φορτωθεί. Το path αυτό καθορίζεται στο threshold config, με default fallback σε "models/xgb_final.joblib". Επίσης γίνεται cached για να μην ξαναδιαβάζει το config κάθε φορά.
 @lru_cache(maxsize=1)
 def get_model_path() -> Path:
@@ -78,7 +135,8 @@ def load_model():
     model_path = get_model_path() # Καλείς την προηγούμενη function για να βρεις πού είναι το artifact.
     return joblib.load(model_path)
 
-# Αυτή η function φορτώνει το demo test dataframe από ένα συγκεκριμένο CSV αρχείο και επιστρέφει το DataFrame. Επίσης γίνεται cached για να μην ξαναφορτώνουμε το CSV κάθε φορά.
+
+# Αυτή η function φορτώνει το demo test dataframe από ένα συγκεκριμένο CSV αρχείο και επιστρέφει το DataFrame. 
 def load_demo_test_df() -> pd.DataFrame:
     path = get_project_root() / "data" / "data_interim" / "splits_week8" / "test_with_row_id.csv" # το path του demo CSV αρχείου που θέλουμε να φορτώσουμε
     if not path.exists():
