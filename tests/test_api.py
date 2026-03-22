@@ -7,6 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import src.api.main as main
+import src.api.model_loader as model_loader
 from src.api.main import app
 
 
@@ -28,8 +29,11 @@ def mock_runtime_artifacts(monkeypatch):
     Make API tests independent from the real model artifact on disk.
     This keeps CI lightweight and deterministic.
     """
+    fake_model_path = Path("models/xgb_final.joblib")
+
     monkeypatch.setattr(main, "load_model", lambda: FakeModel())
-    monkeypatch.setattr(main, "get_model_path", lambda: Path("models/xgb_final.joblib"))
+    monkeypatch.setattr(main, "get_model_path", lambda: fake_model_path)
+    monkeypatch.setattr(main, "get_model_version", lambda: "xgb_final")
     monkeypatch.setattr(
         main,
         "load_model_metadata",
@@ -43,6 +47,12 @@ def mock_runtime_artifacts(monkeypatch):
             "task": "binary_classification",
         },
     )
+
+    # Patch original loader module too, because imported functions may still
+    # resolve globals from there.
+    monkeypatch.setattr(model_loader, "get_model_path", lambda: fake_model_path)
+    monkeypatch.setattr(model_loader, "get_model_version", lambda: "xgb_final")
+
 
 
 # Helper function για να φτιάχνουμε έγκυρα payloads για το /predict endpoint.
