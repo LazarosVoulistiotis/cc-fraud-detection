@@ -94,6 +94,7 @@ pydantic==2.12.5
 pydantic_core==2.41.5
 Pygments==2.19.2
 pyparsing==3.2.3
+pytest==8.4.1
 python-dateutil==2.9.0.post0
 python-json-logger==3.3.0
 python-slugify==8.0.4
