@@ -1,8 +1,8 @@
 # 💳 Credit Card Fraud Detection System
 
-A production-inspired machine learning project for detecting fraudulent credit card transactions under extreme class imbalance.
+A production-inspired machine learning system for detecting fraudulent credit card transactions under extreme class imbalance.
 
-This repository documents the full lifecycle of the project: data understanding, modelling, business-driven threshold selection, explainability, and a working FastAPI inference service for deployment-style demonstration.
+This repository documents the full lifecycle of the project: data understanding, modelling, business-aware threshold selection, explainability, and a working FastAPI inference service with operational hardening for deployment-style demonstration.
 
 ---
 
@@ -10,14 +10,21 @@ This repository documents the full lifecycle of the project: data understanding,
 
 - Built and evaluated multiple fraud detection models, including Logistic Regression, Decision Tree, Random Forest, and XGBoost
 - Selected **XGBoost** as the final champion model based on locked test-set performance and business suitability
-- Treated the classification threshold as an **operational policy**, not a fixed default
+- Treated the classification threshold as an **operational policy**, not a default probability cutoff
 - Finalised a **precision-constrained threshold policy** to reduce false positives while maintaining strong fraud capture
 - Added **SHAP** and **LIME** explainability for global and local model interpretation
-- Implemented a working **FastAPI** service with:
+- Implemented a working **FastAPI** inference service with:
   - `GET /health`
   - `GET /metadata`
   - `POST /predict`
   - `POST /predict_by_id`
+- Hardened the serving layer with:
+  - reproducible preprocessing
+  - strict feature alignment
+  - structured JSON logging
+  - centralized error handling
+  - automated tests with `pytest`
+  - GitHub Actions CI on push / pull request
 - Structured the repository to support both **academic reporting** and **portfolio presentation**
 
 ---
@@ -78,7 +85,7 @@ This project uses the well-known Kaggle Credit Card Fraud Detection dataset.
 
 ## ⚙️ Serving Design
 
-The deployed inference contract uses a frozen serving schema.
+The deployed inference contract uses a frozen serving schema and configuration-driven serving policy.
 
 ### Input to `POST /predict`
 The API accepts **raw canonical input**:
@@ -92,6 +99,15 @@ The API derives the following features at serving time:
 - `hour_sin`
 - `hour_cos`
 - `Amount_log1p`
+
+### Reproducible Preprocessing
+The serving pipeline:
+- validates the frozen schema
+- computes engineered features deterministically
+- aligns features to the exact frozen model feature order
+- rejects missing, unexpected, or invalid inputs
+
+This reduces the risk of inference-time feature mismatch and improves deployment reliability.
 
 ### Demo Endpoint
 The `POST /predict_by_id` endpoint accepts a frozen `row_id` and reconstructs the raw payload from:
@@ -129,10 +145,14 @@ This helps make the final model more transparent and more suitable for fraud/ris
 Simple liveness check.
 
 ### `GET /metadata`
-Returns:
+Returns serving metadata such as:
 - model version
-- threshold policy
+- model artifact path
+- git commit
+- train date
+- threshold policy and version
 - threshold used
+- schema version
 - raw input features
 - engineered features
 - final model feature order
@@ -142,6 +162,8 @@ Scores a raw transaction payload and returns:
 - fraud probability
 - predicted label
 - threshold used
+- threshold policy
+- model version
 
 ### `POST /predict_by_id`
 Scores a frozen demo row and returns:
@@ -152,6 +174,82 @@ Scores a frozen demo row and returns:
 
 ---
 
+## 📈 Observability and Operational Hardening
+
+The API was hardened to behave less like a fragile local demo and more like a production-inspired service.
+
+### Structured Logging
+The service emits structured JSON logs for:
+- request completion
+- prediction scoring
+- validation errors
+- HTTP errors
+- unexpected exceptions
+- metadata requests
+
+Typical logged fields include:
+- `request_id`
+- `method`
+- `path`
+- `status_code`
+- `latency_ms`
+- `prediction_latency_ms`
+- `fraud_probability`
+- `predicted_label`
+- `threshold_used`
+- `threshold_policy`
+- `model_version`
+
+### Error Handling
+The FastAPI app includes centralized error handling for:
+- invalid request payloads
+- explicit HTTP errors
+- unexpected server-side exceptions
+
+### Configuration-Driven Serving
+The serving layer relies on:
+- `configs/threshold.json`
+- `configs/feature_schema.json`
+- `configs/model_metadata.json`
+
+This means thresholding, schema alignment, and model provenance are managed through configs rather than hardcoded values.
+
+---
+
+## 🧪 Testing and CI
+
+### Test Coverage
+The project includes automated tests for:
+- health endpoint behavior
+- prediction endpoint behavior
+- metadata endpoint behavior
+- preprocessing and feature engineering logic
+- golden-path demo prediction flow
+
+### Current Test Structure
+```text
+tests/
+├── test_health.py
+├── test_predict.py
+├── test_preprocess.py
+└── test_golden.py
+```
+
+### Local Result
+```bash
+pytest -q
+22 passed in 3.46s
+```
+
+### Continuous Integration
+A GitHub Actions workflow automatically runs the test suite on:
+- every push to `main`
+- every pull request to `main`
+
+The CI was designed to be artifact-safe by mocking model-dependent API test paths where appropriate.
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Language:** Python
@@ -159,6 +257,9 @@ Scores a frozen demo row and returns:
 - **Explainability:** SHAP, LIME
 - **API:** FastAPI, Pydantic, Uvicorn
 - **Serialization:** joblib
+- **Logging:** structlog
+- **Testing:** pytest
+- **CI:** GitHub Actions
 - **Visualisation:** matplotlib
 - **Environment:** VS Code, Jupyter, Git, GitHub
 
@@ -205,6 +306,12 @@ uvicorn src.api.main:app --reload
 http://127.0.0.1:8000/docs
 ```
 
+### 6. Run the test suite
+
+```bash
+pytest -q
+```
+
 ---
 
 ## 📁 Repository Structure
@@ -213,9 +320,11 @@ http://127.0.0.1:8000/docs
 src/                          # training, tuning, explainability, API code
 src/api/                      # FastAPI inference service
 models/                       # saved model artifacts
-configs/                      # frozen threshold + feature schema
+configs/                      # frozen threshold, schema, model metadata
 data/                         # raw/interim/working datasets
+tests/                        # API and preprocessing tests
 reports/                      # monthly reports, snippets, figures, evidence
+.github/workflows/            # CI workflows
 README.md                     # project overview
 README_deployment.md          # deployment-focused usage guide
 ```
@@ -227,6 +336,7 @@ README_deployment.md          # deployment-focused usage guide
 - `models/xgb_final.joblib` — frozen final champion model
 - `configs/threshold.json` — final threshold policy
 - `configs/feature_schema.json` — frozen serving schema
+- `configs/model_metadata.json` — model provenance and serving metadata
 - `reports/month5/model_card.md` — model card
 - `README_deployment.md` — local deployment guide
 
@@ -243,11 +353,15 @@ README_deployment.md          # deployment-focused usage guide
 - LIME explainability
 - Frozen model artifact and serving schema
 - Working FastAPI inference API
+- Reproducible preprocessing hardening
+- Structured logging and observability
+- Automated tests
+- GitHub Actions CI
 
 **Next steps**
 - Dockerisation
 - optional Streamlit/demo UI
-- deployment hardening
+- deployment hardening beyond local serving
 - monitoring and future MLOps extensions
 
 ---
@@ -261,6 +375,9 @@ This project showcases hands-on experience in:
 - threshold optimisation for business goals
 - explainable AI for risk-sensitive use cases
 - turning an ML model into a deployable inference service
+- reproducible preprocessing and serving contracts
+- configuration-driven deployment logic
+- automated testing and CI-backed quality control
 - structuring a project for both thesis documentation and portfolio presentation
 
 ---
