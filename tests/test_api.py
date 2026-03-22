@@ -1,13 +1,48 @@
 # tests/test_api.py
+from pathlib import Path
 
+import numpy as np
+import pytest
 # Το TestClient είναι εργαλείο για να κάνεις δοκιμαστικά HTTP requests στο app σου χωρίς να χρειάζεται να τρέχει κανονικά server με uvicorn.
 from fastapi.testclient import TestClient
 
+import src.api.main as main
 from src.api.main import app
 
 
 # Δημιουργία test client
 client = TestClient(app)
+
+
+class FakeModel:
+    """Small fake model used for CI-safe API tests."""
+
+    def predict_proba(self, X):
+        # Return constant fraud probability for each row
+        return np.array([[0.2, 0.8] for _ in range(len(X))], dtype=float)
+
+
+@pytest.fixture(autouse=True)
+def mock_runtime_artifacts(monkeypatch):
+    """
+    Make API tests independent from the real model artifact on disk.
+    This keeps CI lightweight and deterministic.
+    """
+    monkeypatch.setattr(main, "load_model", lambda: FakeModel())
+    monkeypatch.setattr(main, "get_model_path", lambda: Path("models/xgb_final.joblib"))
+    monkeypatch.setattr(
+        main,
+        "load_model_metadata",
+        lambda: {
+            "model_version": "xgb_final",
+            "git_commit": "test-commit-sha",
+            "train_date": "2026-03-21",
+            "training_data_reference": "data/data_interim/splits_week8/train.csv",
+            "training_target": "Class",
+            "framework": "xgboost",
+            "task": "binary_classification",
+        },
+    )
 
 
 # Helper function για να φτιάχνουμε έγκυρα payloads για το /predict endpoint.
