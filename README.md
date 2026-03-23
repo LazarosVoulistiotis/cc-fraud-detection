@@ -2,7 +2,7 @@
 
 A production-inspired machine learning system for detecting fraudulent credit card transactions under extreme class imbalance.
 
-This repository documents the full lifecycle of the project: data understanding, modelling, business-aware threshold selection, explainability, API serving, operational hardening, and Docker-based packaging for reproducible local deployment.
+This repository documents the full lifecycle of the project: data understanding, modelling, business-aware threshold selection, explainability, API serving, operational hardening, Docker-based packaging for reproducible local deployment, and report-ready project documentation.
 
 ---
 
@@ -26,6 +26,7 @@ This repository documents the full lifecycle of the project: data understanding,
   - automated tests with `pytest`
   - GitHub Actions CI on push / pull request
 - Added **Docker packaging** so the API can run in a consistent containerized environment
+- Successfully validated the containerized API through a **local smoke test**
 - Structured the repository to support both **academic reporting** and **portfolio presentation**
 
 ---
@@ -382,6 +383,16 @@ Swagger UI:
 http://127.0.0.1:8000/docs
 ```
 
+### Quick smoke test
+
+From a second terminal, you can verify the containerized API with:
+
+```bash
+curl http://localhost:8000/health
+curl http://localhost:8000/metadata
+curl -X POST "http://localhost:8000/predict_by_id" -H "Content-Type: application/json" -d '{"row_id": 0}'
+```
+
 ### Optional shortcut commands with Makefile
 
 If `make` is installed on your system, you can use these shortcuts:
@@ -452,11 +463,11 @@ README_deployment.md          # deployment-focused usage guide
 - Automated tests
 - GitHub Actions CI
 - Dockerisation
+- Successful local smoke testing of the containerized API
 - Docker-ready local deployment documentation
 
 **Next steps**
 
-- local smoke testing inside the built container
 - optional Streamlit/demo UI
 - deployment hardening beyond local serving
 - monitoring and future MLOps extensions
@@ -476,6 +487,7 @@ This project showcases hands-on experience in:
 - configuration-driven deployment logic
 - automated testing and CI-backed quality control
 - containerising a Python API with Docker
+- validating a containerized service through smoke testing
 - structuring a project for both thesis documentation and portfolio presentation
 
 ---
