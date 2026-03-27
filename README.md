@@ -2,7 +2,7 @@
 
 A production-inspired machine learning system for detecting fraudulent credit card transactions under extreme class imbalance.
 
-This repository documents the full lifecycle of the project: data understanding, modelling, business-aware threshold selection, explainability, API serving, operational hardening, Docker-based packaging for reproducible local deployment, and report-ready project documentation.
+This repository documents the full lifecycle of the project: data understanding, modelling, business-aware threshold selection, explainability, API serving, operational hardening, Docker-based packaging for reproducible local deployment, and live cloud deployment of the final inference API.
 
 ---
 
@@ -27,6 +27,7 @@ This repository documents the full lifecycle of the project: data understanding,
   - GitHub Actions CI on push / pull request
 - Added **Docker packaging** so the API can run in a consistent containerized environment
 - Successfully validated the containerized API through a **local smoke test**
+- Deployed the final API as a **live public service on Google Cloud Run**
 - Structured the repository to support both **academic reporting** and **portfolio presentation**
 
 ---
@@ -130,41 +131,13 @@ This is intended for demonstration and report evidence, not for real production 
 
 ---
 
-## 🔍 Explainability
-
-Model explainability is a core part of the system.
-
-### SHAP
-
-Used for:
-
-- global feature importance
-- beeswarm analysis
-- dependence plots
-- local case studies
-
-### LIME
-
-Used for:
-
-- local explanation of individual predictions
-- complementary model-agnostic interpretation
-- case-level reporting for TP / TN / borderline examples
-
-This helps make the final model more transparent and more suitable for fraud/risk use cases where interpretability matters.
-
----
-
 ## 🌐 API Endpoints
 
 ### `GET /health`
-
 Simple liveness check.
 
 ### `GET /metadata`
-
 Returns serving metadata such as:
-
 - model version
 - model artifact path
 - git commit
@@ -177,9 +150,7 @@ Returns serving metadata such as:
 - final model feature order
 
 ### `POST /predict`
-
 Scores a raw transaction payload and returns:
-
 - fraud probability
 - predicted label
 - threshold used
@@ -187,13 +158,64 @@ Scores a raw transaction payload and returns:
 - model version
 
 ### `POST /predict_by_id`
-
 Scores a frozen demo row and returns:
-
 - fraud probability
 - predicted label
 - `row_id`
 - `true_label`
+
+---
+
+## ☁️ Live Cloud Deployment
+
+The final serving API was deployed as a live public service on **Google Cloud Run**.
+
+### Public endpoint
+```text
+https://cc-fraud-api-726136433853.europe-west1.run.app
+```
+
+### Interactive API docs
+```text
+https://cc-fraud-api-726136433853.europe-west1.run.app/docs
+```
+
+### Notes
+- The root path `/` may return `{"detail":"Not Found"}`. This is expected because the deployment is an API service rather than a website landing page.
+- The correct browser entry point for documentation and interactive testing is `/docs`.
+
+### Example live calls
+```bash
+export SERVICE_URL="https://cc-fraud-api-726136433853.europe-west1.run.app"
+
+curl "$SERVICE_URL/health"
+curl "$SERVICE_URL/metadata"
+
+curl -X POST "$SERVICE_URL/predict_by_id" \
+  -H "Content-Type: application/json" \
+  -d '{"row_id": 0}'
+```
+
+---
+
+## 🔍 Explainability
+
+Model explainability is a core part of the system.
+
+### SHAP
+Used for:
+- global feature importance
+- beeswarm analysis
+- dependence plots
+- local case studies
+
+### LIME
+Used for:
+- local explanation of individual predictions
+- complementary model-agnostic interpretation
+- case-level reporting for TP / TN / borderline examples
+
+This helps make the final model more transparent and more suitable for fraud/risk use cases where interpretability matters.
 
 ---
 
@@ -204,7 +226,6 @@ The API was hardened to behave less like a fragile local demo and more like a pr
 ### Structured Logging
 
 The service emits structured JSON logs for:
-
 - request completion
 - prediction scoring
 - validation errors
@@ -213,7 +234,6 @@ The service emits structured JSON logs for:
 - metadata requests
 
 Typical logged fields include:
-
 - `request_id`
 - `method`
 - `path`
@@ -229,7 +249,6 @@ Typical logged fields include:
 ### Error Handling
 
 The FastAPI app includes centralized error handling for:
-
 - invalid request payloads
 - explicit HTTP errors
 - unexpected server-side exceptions
@@ -237,12 +256,19 @@ The FastAPI app includes centralized error handling for:
 ### Configuration-Driven Serving
 
 The serving layer relies on:
-
 - `configs/threshold.json`
 - `configs/feature_schema.json`
 - `configs/model_metadata.json`
 
 This means thresholding, schema alignment, and model provenance are managed through configs rather than hardcoded values.
+
+### Monitoring and Drift (concept)
+The Week 20 deployment also introduced a production-aware monitoring concept around:
+- latency and service health
+- alert rate
+- precision / recall drift
+- feature distribution drift
+- retraining triggers based on schedule or drift thresholds
 
 ---
 
@@ -251,7 +277,6 @@ This means thresholding, schema alignment, and model provenance are managed thro
 ### Test Coverage
 
 The project includes automated tests for:
-
 - health endpoint behavior
 - prediction endpoint behavior
 - metadata endpoint behavior
@@ -278,7 +303,6 @@ pytest -q
 ### Continuous Integration
 
 A GitHub Actions workflow automatically runs the test suite on:
-
 - every push to `main`
 - every pull request to `main`
 
@@ -297,6 +321,7 @@ The CI was designed to be artifact-safe by mocking model-dependent API test path
 - **Testing:** pytest
 - **CI:** GitHub Actions
 - **Containerization:** Docker
+- **Cloud Deployment:** Google Cloud Run, Cloud Build, Artifact Registry
 - **Visualisation:** matplotlib
 - **Environment:** VS Code, Jupyter, Git, GitHub
 
@@ -305,7 +330,6 @@ The CI was designed to be artifact-safe by mocking model-dependent API test path
 ## ▶️ Quick Start
 
 ### 1. Clone the repository
-
 ```bash
 git clone https://github.com/LazarosVoulistiotis/cc-fraud-detection.git
 cd cc-fraud-detection
@@ -314,39 +338,33 @@ cd cc-fraud-detection
 ### 2. Create and activate a virtual environment
 
 #### Windows PowerShell
-
 ```bash
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
 #### Git Bash
-
 ```bash
 python -m venv .venv
 source .venv/Scripts/activate
 ```
 
 ### 3. Install dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Run the API locally
-
 ```bash
 uvicorn src.api.main:app --reload
 ```
 
 ### 5. Open the docs
-
 ```text
 http://127.0.0.1:8000/docs
 ```
 
 ### 6. Run the test suite
-
 ```bash
 pytest -q
 ```
@@ -358,19 +376,16 @@ pytest -q
 The project includes a Docker-based local deployment path so the API can run in a reproducible environment without depending on the host Python setup.
 
 ### Build the image
-
 ```bash
 docker build -t fraud-api .
 ```
 
 ### Run the container
-
 ```bash
 docker run --rm -p 8000:8000 fraud-api
 ```
 
 ### Access the API
-
 Once the container starts successfully, the service will be available at:
 
 ```text
@@ -378,13 +393,11 @@ http://127.0.0.1:8000
 ```
 
 Swagger UI:
-
 ```text
 http://127.0.0.1:8000/docs
 ```
 
 ### Quick smoke test
-
 From a second terminal, you can verify the containerized API with:
 
 ```bash
@@ -405,7 +418,6 @@ make docker-run-quick
 ```
 
 #### What each target does
-
 - `make run` → starts the API locally with auto-reload
 - `make test` → runs the test suite with `pytest -q`
 - `make docker` → builds the Docker image tagged as `fraud-api`
@@ -449,7 +461,6 @@ README_deployment.md          # deployment-focused usage guide
 ## ✅ Current Status
 
 **Completed**
-
 - Data exploration and preprocessing
 - Baseline modelling
 - Business-aware model selection
@@ -464,20 +475,20 @@ README_deployment.md          # deployment-focused usage guide
 - GitHub Actions CI
 - Dockerisation
 - Successful local smoke testing of the containerized API
-- Docker-ready local deployment documentation
+- Live Cloud Run deployment
+- Deployment architecture documentation
 
 **Next steps**
-
 - optional Streamlit/demo UI
-- deployment hardening beyond local serving
-- monitoring and future MLOps extensions
+- stronger monitoring implementation
+- authenticated/private deployment variant
+- future MLOps extensions
 
 ---
 
 ## 🎯 What This Project Demonstrates
 
 This project showcases hands-on experience in:
-
 - applied machine learning under class imbalance
 - model evaluation beyond accuracy
 - threshold optimisation for business goals
@@ -487,7 +498,8 @@ This project showcases hands-on experience in:
 - configuration-driven deployment logic
 - automated testing and CI-backed quality control
 - containerising a Python API with Docker
-- validating a containerized service through smoke testing
+- deploying a public ML inference API on Google Cloud Run
+- validating a live cloud-hosted service
 - structuring a project for both thesis documentation and portfolio presentation
 
 ---

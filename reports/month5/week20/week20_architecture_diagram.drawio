@@ -1,0 +1,72 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
+  <diagram name="Page-1" id="CObMZCu-NK0SVKi3s-Mf">
+    <mxGraphModel dx="1603" dy="811" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;perimeterSpacing=0;labelBackgroundColor=none;fillColor=light-dark(#FFFFFF,#CCCCCC);strokeColor=light-dark(#7A7A7A,#7A7A7A);" value="" vertex="1">
+          <mxGeometry height="380" width="1030" x="510" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-1" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;" target="EgRwSxJlq2IpOfPyAkR4-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);fontColor=light-dark(#000000,#1A1A1A);" value="User / Client" vertex="1">
+          <mxGeometry height="135" width="180" x="20" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-8" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="EgRwSxJlq2IpOfPyAkR4-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=light-dark(#000000,#1A1A1A);fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);" value="&lt;strong data-start=&quot;1450&quot; data-end=&quot;1479&quot;&gt;Public Cloud Run Endpoint&lt;/strong&gt;&lt;br data-start=&quot;1479&quot; data-end=&quot;1482&quot;&gt;&lt;div&gt;&lt;strong data-start=&quot;1450&quot; data-end=&quot;1479&quot;&gt;&lt;br&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;strong data-start=&quot;1450&quot; data-end=&quot;1479&quot;&gt;&lt;code data-start=&quot;1506&quot; data-end=&quot;1513&quot;&gt;HTTPS&lt;/code&gt;&lt;br&gt;&lt;br&gt;&lt;code data-start=&quot;1514&quot; data-end=&quot;1557&quot;&gt;/health /metadata /predict /predict_by_id&lt;/code&gt;&lt;/strong&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="180" x="280" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-4" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;" target="EgRwSxJlq2IpOfPyAkR4-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="363" />
+              <mxPoint x="760" y="363" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-13" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="XQGyQIvOLswKWpPZmU4m-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=light-dark(#000000,#1A1A1A);fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);" value="&lt;p data-start=&quot;1607&quot; data-end=&quot;1629&quot;&gt;&lt;strong data-start=&quot;1607&quot; data-end=&quot;1629&quot;&gt;REST API (FastAPI)&lt;/strong&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="130" width="180" x="540" y="297.5" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=light-dark(#000000,#1A1A1A);fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);" value="&lt;strong data-start=&quot;1948&quot; data-end=&quot;1965&quot;&gt;JSON Response&lt;/strong&gt;&lt;br data-start=&quot;1965&quot; data-end=&quot;1968&quot;&gt;&lt;div&gt;&lt;strong data-start=&quot;1948&quot; data-end=&quot;1965&quot;&gt;&lt;br&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;strong data-start=&quot;1948&quot; data-end=&quot;1965&quot;&gt;&lt;p data-start=&quot;1948&quot; data-end=&quot;2019&quot;&gt;&lt;code data-start=&quot;1982&quot; data-end=&quot;2001&quot;&gt;fraud_probability&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;2002&quot; data-end=&quot;2019&quot;&gt;predicted_label&lt;/code&gt;&lt;/p&gt;&lt;/strong&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="170" x="1330" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-6" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;" target="EgRwSxJlq2IpOfPyAkR4-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-15" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="XQGyQIvOLswKWpPZmU4m-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=light-dark(#000000,#1A1A1A);strokeColor=light-dark(#7A7A7A,#7A7A7A);fillColor=light-dark(#F7F7F7,#F7F7F7);" value="&lt;strong data-start=&quot;1816&quot; data-end=&quot;1833&quot;&gt;XGBoost Model&lt;/strong&gt;&lt;br data-start=&quot;1833&quot; data-end=&quot;1836&quot;&gt;&lt;div&gt;&lt;strong data-start=&quot;1816&quot; data-end=&quot;1833&quot;&gt;&lt;br&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;strong data-start=&quot;1816&quot; data-end=&quot;1833&quot;&gt;&lt;p data-start=&quot;1816&quot; data-end=&quot;1916&quot;&gt;&lt;code data-start=&quot;1850&quot; data-end=&quot;1868&quot;&gt;xgb_final.joblib&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;1869&quot; data-end=&quot;1889&quot;&gt;threshold = 0.1279&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;1890&quot; data-end=&quot;1916&quot;&gt;precision_constraint_p80&lt;/code&gt;&lt;/p&gt;&lt;/strong&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="180" x="1070" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-5" edge="1" parent="1" source="EgRwSxJlq2IpOfPyAkR4-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;" target="EgRwSxJlq2IpOfPyAkR4-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);fontColor=light-dark(#000000,#1A1A1A);" value="&lt;strong data-start=&quot;1667&quot; data-end=&quot;1697&quot;&gt;Preprocess / Feature Align&lt;/strong&gt;&lt;br data-start=&quot;1697&quot; data-end=&quot;1700&quot;&gt;&lt;div&gt;&lt;strong data-start=&quot;1667&quot; data-end=&quot;1697&quot;&gt;&lt;br&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;&lt;strong data-start=&quot;1667&quot; data-end=&quot;1697&quot;&gt;&lt;code data-start=&quot;1714&quot; data-end=&quot;1733&quot;&gt;schema validation&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;1734&quot; data-end=&quot;1760&quot;&gt;Hour, hour_sin, hour_cos&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;1761&quot; data-end=&quot;1775&quot;&gt;Amount_log1p&lt;/code&gt;&lt;/strong&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="213" x="780" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="EgRwSxJlq2IpOfPyAkR4-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;labelBackgroundColor=none;" value="&lt;p data-start=&quot;1590&quot; data-end=&quot;1618&quot;&gt;&lt;span style=&quot;font-size: 20px; background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Google Cloud Run Service&lt;/span&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="270" x="899" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=light-dark(#7A7A7A,#7A7A7A);fillColor=light-dark(#F7F7F7,#F7F7F7);fontColor=light-dark(#000000,#1A1A1A);" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Logs / Monitoring&lt;div&gt;&lt;p data-start=&quot;2919&quot; data-end=&quot;3007&quot;&gt;&lt;code data-start=&quot;2943&quot; data-end=&quot;2956&quot;&gt;request IDs&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;2959&quot; data-end=&quot;2968&quot;&gt;latency&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;2971&quot; data-end=&quot;2985&quot;&gt;status codes&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;2988&quot; data-end=&quot;3007&quot;&gt;prediction events&lt;/code&gt;&lt;/p&gt;&lt;br&gt;&lt;h3 data-start=&quot;3009&quot; data-end=&quot;3021&quot;&gt;&lt;/h3&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="110" width="200" x="530" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-18" edge="1" parent="1" source="XQGyQIvOLswKWpPZmU4m-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;dashed=1;" target="XQGyQIvOLswKWpPZmU4m-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);fontColor=light-dark(#000000,#1A1A1A);fillStyle=auto;labelBorderColor=none;dashed=1;gradientColor=none;" value="&lt;p data-start=&quot;3187&quot; data-end=&quot;3265&quot;&gt;&lt;strong data-start=&quot;3187&quot; data-end=&quot;3215&quot;&gt;Model Registry (concept)&lt;/strong&gt;&lt;br data-start=&quot;3215&quot; data-end=&quot;3218&quot;&gt;&lt;br&gt;&lt;code data-start=&quot;3218&quot; data-end=&quot;3239&quot;&gt;artifact versioning&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;3242&quot; data-end=&quot;3265&quot;&gt;metadata / provenance&lt;/code&gt;&lt;/p&gt;&lt;h3 data-start=&quot;3267&quot; data-end=&quot;3279&quot;&gt;&lt;/h3&gt;" vertex="1">
+          <mxGeometry height="100" width="170" x="1075" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="XQGyQIvOLswKWpPZmU4m-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#F7F7F7,#F7F7F7);strokeColor=light-dark(#7A7A7A,#7A7A7A);fontColor=light-dark(#000000,#1A1A1A);dashed=1;" value="&lt;p data-start=&quot;3574&quot; data-end=&quot;3666&quot;&gt;&lt;strong data-start=&quot;3574&quot; data-end=&quot;3606&quot;&gt;Retraining Pipeline (future)&lt;/strong&gt;&lt;/p&gt;&lt;p data-start=&quot;3574&quot; data-end=&quot;3666&quot;&gt;&lt;code data-start=&quot;3609&quot; data-end=&quot;3623&quot;&gt;drift checks&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;3626&quot; data-end=&quot;3644&quot;&gt;threshold review&lt;/code&gt;&lt;br&gt;&lt;code data-start=&quot;3647&quot; data-end=&quot;3666&quot;&gt;new model version&lt;/code&gt;&lt;/p&gt;&lt;h3 data-start=&quot;3668&quot; data-end=&quot;3680&quot;&gt;&lt;/h3&gt;" vertex="1">
+          <mxGeometry height="100" width="180" x="1340" y="600" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
