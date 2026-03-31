@@ -1,0 +1,3 @@
+# Paragraph — Week 21 Peer Testing Placeholder
+
+A peer-testing workflow was prepared in Week 21 in order to gather external usability feedback on the live deployed demo. Structured materials were created to record tester identity, scenario, issue observed, severity, and action taken, together with short feedback questions on user understanding, output clarity, confusion points, and perceived completeness of the system for portfolio or viva presentation. At the time of writing, external tester feedback was still pending and will be incorporated as supplementary usability evidence once received. This does not affect the technical closure of Week 21, but it provides an additional human-centered validation layer for the final deployed system.

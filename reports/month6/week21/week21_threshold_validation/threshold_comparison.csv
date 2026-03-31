@@ -1,0 +1,4 @@
+policy_name,threshold,precision,recall,f1,tp,fp,fn,tn,alerts,alert_rate,alerts_per_10k,cost_per_tx_fp1_fn20,meets_initial_goal_recall_ge_090,meets_initial_goal_precision_ge_010,meets_final_serving_precision_ge_080,note
+final_locked_precision_constraint_p80,0.1279,0.8279569892473119,0.8105263157894737,0.8191489361702128,77,16,18,56635,93,0.0016388820357382018,16.38882035738202,0.006626017692877031,False,True,True,locked serving threshold
+historical_cost_based_reference,0.0884,0.7938144329896907,0.8105263157894737,0.8020833333333334,77,20,18,56631,97,0.0017093715856624256,17.093715856624257,0.006696507242801255,False,True,False,historical reference from Week 12
+posthoc_reference_recall_ge_090,5.435671e-05,0.011826182618261826,0.9052631578947369,0.02334735984797068,86,7186,9,49465,7272,0.12815000176223876,1281.5000176223875,0.129806506185458,True,False,False,post-hoc recall-first reference on test; NOT for policy selection

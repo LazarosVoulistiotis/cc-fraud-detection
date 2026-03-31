@@ -1,0 +1,22 @@
+{
+  "model_artifact": "models\\xgb_final.joblib",
+  "test_data": "data\\data_interim\\splits_week8\\test.csv",
+  "threshold_policy": "precision_constraint_p80",
+  "threshold_used": 0.1279,
+  "n_test": 56746,
+  "fraud_cases": 95,
+  "roc_auc": 0.9699499892694792,
+  "pr_auc": 0.8171348385156545,
+  "precision": 0.8279569892473119,
+  "recall": 0.8105263157894737,
+  "f1": 0.8191489361702128,
+  "confusion_matrix": {
+    "tn": 56635,
+    "fp": 16,
+    "fn": 18,
+    "tp": 77
+  },
+  "fraud_alert_rate": 0.0016388820357382018,
+  "alerts_per_10k": 16.38882035738202,
+  "cost_per_tx_fp1_fn20": 0.006626017692877031
+}
