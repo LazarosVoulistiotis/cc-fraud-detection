@@ -1,11 +1,15 @@
 # 💳 Credit Card Fraud Detection System
 
-A production-inspired machine learning project for detecting fraudulent credit card transactions under **extreme class imbalance**, combining business-aware model evaluation, explainable AI, API serving, Docker packaging, automated tests, and live cloud deployment.
+A production-inspired machine learning project for detecting fraudulent credit card transactions under **extreme class imbalance**, combining business-aware model evaluation, explainable AI, API serving, Docker packaging, automated tests, and cloud deployment.
 
-This repository supports the CN6000 final-year project:
+This repository supports my BSc (Hons) Computer Science final-year project (CN6000, 2026):
 
 > **Credit Card Fraud Detection with Explainable Machine Learning and Production-Inspired Implementation**  
-> Final-year BSc Computer Science project by **Lazaros Voulistiotis**
+> by **Lazaros Voulistiotis**
+
+**Locked test results:** PR-AUC **0.817** · ROC-AUC **0.970** · Precision **0.83** · Recall **0.81** · only **16 false positives** in 56,651 legitimate transactions
+
+> ℹ️ The public Cloud Run demo is currently offline. The full API runs locally in one command with Docker, see [Run via Docker](#run-via-docker).
 
 ---
 
@@ -38,11 +42,13 @@ The final selected solution is an **XGBoost champion model** served through a **
 | Champion model | XGBoost Classifier |
 | Final threshold policy | `precision_constraint_p80` |
 | Final threshold | `0.1279` |
+| Test PR-AUC / ROC-AUC | `0.817` / `0.970` |
+| Test precision / recall | `0.828` / `0.811` |
 | Explainability | SHAP + LIME |
 | Serving layer | FastAPI |
 | Packaging | Docker |
 | CI/testing | pytest + GitHub Actions |
-| Cloud deployment | Google Cloud Run |
+| Cloud deployment | Google Cloud Run (validated March 2026; public demo now offline) |
 | Project status | Completed academic proof of concept |
 
 ---
@@ -70,7 +76,7 @@ The final selected solution is an **XGBoost champion model** served through a **
   - GitHub Actions CI.
 - Added Docker packaging for reproducible runtime execution.
 - Validated the containerized API through local smoke tests.
-- Deployed the final API as a live service on **Google Cloud Run**.
+- Deployed and validated the final API as a public service on **Google Cloud Run** (March 2026).
 - Completed a final release-readiness pass with frozen-system validation and threshold sensitivity analysis.
 
 ---
@@ -370,40 +376,15 @@ data/data_interim/splits_week8/test_with_row_id.csv
 
 ---
 
-## Live Cloud Deployment
+## Cloud Deployment
 
-The final FastAPI service was deployed on **Google Cloud Run**.
+The final FastAPI service was deployed as a public, containerized service on **Google Cloud Run** (region `europe-west1`) in March 2026. The live endpoints (`/health`, `/metadata`, `/predict`, `/predict_by_id`) and the Swagger UI were validated against the deployed service.
 
-### Public Service URL
+> **Status:** the public demo is currently **offline**, because the Google Cloud free-trial credits used for hosting have ended. The code, Docker image definition and deployment steps are unchanged, so the service can be redeployed as is.
 
-```text
-https://cc-fraud-api-726136433853.europe-west1.run.app
-```
+To try the API today, run it locally with Docker (see [Run via Docker](#run-via-docker)); the endpoints and responses are the same as in the cloud deployment.
 
-### Interactive Swagger UI
-
-```text
-https://cc-fraud-api-726136433853.europe-west1.run.app/docs
-```
-
-### Notes
-
-- The root path `/` may return `{"detail": "Not Found"}`.
-- This is expected because the deployment is an API service, not a website.
-- Use `/docs` for browser-based testing.
-
-### Example Live Calls
-
-```bash
-export SERVICE_URL="https://cc-fraud-api-726136433853.europe-west1.run.app"
-
-curl "$SERVICE_URL/health"
-curl "$SERVICE_URL/metadata"
-
-curl -X POST "$SERVICE_URL/predict_by_id" \
-  -H "Content-Type: application/json" \
-  -d '{"row_id": 0}'
-```
+To redeploy it to Cloud Run on your own Google Cloud project, follow [`README_deployment.md`](README_deployment.md).
 
 ---
 
@@ -663,7 +644,7 @@ README_deployment.md          # deployment-focused usage guide
 - GitHub Actions CI
 - Dockerization
 - Local Docker smoke testing
-- Google Cloud Run deployment
+- Google Cloud Run deployment (validated March 2026; public demo now offline)
 - Final locked-system validation
 - Release-readiness documentation
 
@@ -726,8 +707,9 @@ This project demonstrates practical experience in:
 ## Author
 
 **Lazaros Voulistiotis**  
-Final-year BSc Computer Science student  
-Aspiring Machine Learning Engineer
+MSc Artificial Intelligence student (Metropolitan College / University of East London, 2026–2027)  
+BSc (Hons) Computer Science, 2026  
+[GitHub](https://github.com/LazarosVoulistiotis) · [LinkedIn](https://www.linkedin.com/in/lazaros-voulistiotis/)
 
 ---
 
