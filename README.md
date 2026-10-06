@@ -384,7 +384,7 @@ The final FastAPI service was deployed as a public, containerized service on **G
 
 To try the API today, run it locally with Docker (see [Run via Docker](#run-via-docker)); the endpoints and responses are the same as in the cloud deployment.
 
-To redeploy it to Cloud Run on your own Google Cloud project, follow [`README_deployment.md`](README_deployment.md).
+To redeploy it to Cloud Run on your own Google Cloud project, follow [`DEPLOYMENT_GUIDE.md`](DEPLOYMENT_GUIDE.md).
 
 ---
 

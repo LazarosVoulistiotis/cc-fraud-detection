@@ -124,27 +124,19 @@ curl -X POST "http://localhost:8000/predict_by_id" -H "Content-Type: application
 
 ---
 
-## Live Cloud Deployment (Google Cloud Run)
+## Cloud Deployment (Google Cloud Run)
 
-The final API was deployed as a public Cloud Run service.
+The final API was deployed as a public Cloud Run service (region `europe-west1`) in March 2026, and all endpoints plus the Swagger UI were validated against the live service.
 
-### Public endpoint
-```text
-https://cc-fraud-api-726136433853.europe-west1.run.app
-```
+> **Status:** the public demo is currently **offline**, because the Google Cloud free-trial credits used for hosting have ended. The container and serving code are unchanged, so the service can be redeployed as is.
 
-### Interactive docs
-```text
-https://cc-fraud-api-726136433853.europe-west1.run.app/docs
-```
+To redeploy it on your own Google Cloud project, follow [`DEPLOYMENT_GUIDE.md`](DEPLOYMENT_GUIDE.md) (section 3, Google Cloud Run).
 
-### Notes
-- The root path `/` may return `{"detail":"Not Found"}`. This is expected because the service is an API rather than a web landing page.
-- The correct public browser entry point is `/docs`.
+### Calling a deployed service
+Once deployed, Cloud Run returns a service URL. Set it and call the same endpoints as in local mode:
 
-### Example live calls
 ```bash
-export SERVICE_URL="https://cc-fraud-api-726136433853.europe-west1.run.app"
+export SERVICE_URL="https://YOUR_CLOUD_RUN_URL"
 
 curl "$SERVICE_URL/health"
 curl "$SERVICE_URL/metadata"
@@ -153,6 +145,10 @@ curl -X POST "$SERVICE_URL/predict_by_id" \
   -H "Content-Type: application/json" \
   -d '{"row_id": 0}'
 ```
+
+### Notes
+- The root path `/` may return `{"detail":"Not Found"}`. This is expected because the service is an API rather than a web landing page.
+- The browser entry point is `/docs`.
 
 ---
 
@@ -351,7 +347,7 @@ Confirm that:
 - the server started successfully
 - port `8000` is available
 - you are opening `http://127.0.0.1:8000/docs` for local mode
-- or `https://cc-fraud-api-726136433853.europe-west1.run.app/docs` for live cloud mode
+- or `https://YOUR_CLOUD_RUN_URL/docs` if you have redeployed the service to Cloud Run
 
 ---
 
